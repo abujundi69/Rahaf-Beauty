@@ -1,0 +1,63 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: rahaf-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+      - rahaf-db-data:/var/opt/mssql
+    networks:
+      - rahaf-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"${DB_PASSWORD}\" -Q 'SELECT 1' -No || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 12
+      start_period: 45s
+
+  api:
+    build:
+      context: ./RahafBeauty
+      dockerfile: Dockerfile
+    container_name: rahaf-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Server=db;Database=RahafBeautyDb;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true"
+      Jwt__Key: "${JWT_KEY}"
+      Jwt__Issuer: "RahafBeauty"
+      Jwt__Audience: "RahafBeautyClients"
+      Jwt__ExpiresMinutes: "1440"
+      SeedAdmin__PhoneNumber: "${ADMIN_PHONE}"
+      SeedAdmin__Password: "${ADMIN_PASSWORD}"
+      SeedAdmin__FullName: "${ADMIN_NAME}"
+      Cors__AllowedOrigins: "https://rahafbeauty.com,https://www.rahafbeauty.com"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - rahaf-net
+      - marketplace_internal
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./FrontEnd
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: "https://api.rahafbeauty.com/api"
+    container_name: rahaf-frontend
+    networks:
+      - rahaf-net
+      - marketplace_internal
+    restart: unless-stopped
+
+networks:
+  rahaf-net:
+    driver: bridge
+  marketplace_internal:
+    external: true
+
+volumes:
+  rahaf-db-data:

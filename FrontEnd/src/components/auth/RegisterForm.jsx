@@ -6,47 +6,13 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { useLanguage } from "../../context/LanguageContext.jsx";
 import BrandLogo from "../BrandLogo.jsx";
 import Button from "../Button.jsx";
+import AuthInput from "./AuthInput.jsx";
 
 const phonePattern = /^\d{10}$/;
 const blockedRedirectPrefixes = ["/admin", "/account", "/login", "/register"];
 
 function normalizePhoneInput(value) {
   return value.replace(/\D/g, "").slice(0, 10);
-}
-
-function Field({
-  error,
-  icon: Icon,
-  label,
-  onChange,
-  type = "text",
-  value,
-  inputMode,
-  maxLength,
-}) {
-  return (
-    <label className="block text-sm font-bold text-ink">
-      {label}
-      <span className="relative mt-2 block">
-        <Icon
-          className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
-          aria-hidden="true"
-        />
-        <input
-          type={type}
-          inputMode={inputMode}
-          maxLength={maxLength}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          aria-invalid={Boolean(error)}
-          className="h-12 w-full rounded-full bg-ivory pe-4 ps-11 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
-        />
-      </span>
-      {error ? (
-        <span className="mt-2 block text-xs font-semibold text-sale">{error}</span>
-      ) : null}
-    </label>
-  );
 }
 
 export default function RegisterForm() {
@@ -139,23 +105,23 @@ export default function RegisterForm() {
         </div>
       </div>
       <div className="mt-6 space-y-4">
-        <Field
+        <AuthInput
           label={t("fullName")}
           icon={UserRound}
           value={values.fullName}
           onChange={(value) => update("fullName", value)}
           error={errors.fullName}
         />
-        <Field
+        <AuthInput
           label={t("phoneNumber")}
           icon={Phone}
-          value={values.phoneNumber}
           inputMode="numeric"
           maxLength={10}
+          value={values.phoneNumber}
           onChange={(value) => update("phoneNumber", value)}
           error={errors.phoneNumber}
         />
-        <Field
+        <AuthInput
           label={t("password")}
           icon={LockKeyhole}
           type="password"
@@ -163,7 +129,7 @@ export default function RegisterForm() {
           onChange={(value) => update("password", value)}
           error={errors.password}
         />
-        <Field
+        <AuthInput
           label={t("confirmPassword")}
           icon={LockKeyhole}
           type="password"

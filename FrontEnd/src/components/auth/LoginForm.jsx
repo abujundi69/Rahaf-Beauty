@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { useLanguage } from "../../context/LanguageContext.jsx";
 import BrandLogo from "../BrandLogo.jsx";
 import Button from "../Button.jsx";
+import AuthInput from "./AuthInput.jsx";
 
 const phonePattern = /^\d{10}$/;
 const blockedCustomerRedirectPrefixes = ["/admin", "/account", "/login", "/register"];
@@ -84,42 +85,24 @@ export default function LoginForm() {
       ) : null}
 
       <div className="mt-6 space-y-4">
-        <label className="block text-sm font-bold text-ink">
-          {t("phoneNumber")}
-          <span className="relative mt-2 block">
-            <Phone
-              className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
-              aria-hidden="true"
-            />
-            <input
-              type="text"
-              inputMode="numeric"
-              autoComplete="tel"
-              maxLength={10}
-              value={phoneNumber}
-              onChange={(event) => setPhoneNumber(normalizePhoneInput(event.target.value))}
-              className="h-12 w-full rounded-full bg-ivory pe-4 ps-11 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
-              required
-            />
-          </span>
-        </label>
-
-        <label className="block text-sm font-bold text-ink">
-          {t("password")}
-          <span className="relative mt-2 block">
-            <LockKeyhole
-              className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
-              aria-hidden="true"
-            />
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="h-12 w-full rounded-full bg-ivory pe-4 ps-11 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
-              required
-            />
-          </span>
-        </label>
+        <AuthInput
+          label={t("phoneNumber")}
+          icon={Phone}
+          inputMode="numeric"
+          autoComplete="tel"
+          maxLength={10}
+          value={phoneNumber}
+          onChange={(value) => setPhoneNumber(normalizePhoneInput(value))}
+          required
+        />
+        <AuthInput
+          label={t("password")}
+          icon={LockKeyhole}
+          type="password"
+          value={password}
+          onChange={(value) => setPassword(value)}
+          required
+        />
       </div>
 
       <Button type="submit" className="mt-6 w-full" disabled={submitting}>

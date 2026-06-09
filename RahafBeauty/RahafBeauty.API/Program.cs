@@ -40,16 +40,24 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+var extraOrigins = builder.Configuration["Cors:AllowedOrigins"]
+    ?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    ?? [];
+
+var allCorsOrigins = new[]
+{
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174"
+}.Concat(extraOrigins).ToArray();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
     {
         policy
-            .WithOrigins(
-                "http://localhost:5173",
-                "http://127.0.0.1:5173",
-                "http://localhost:5174",
-                "http://127.0.0.1:5174")
+            .WithOrigins(allCorsOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -126,11 +134,6 @@ if (app.Environment.IsDevelopment())
 }
 
 await app.Services.EnsureSeedDataAsync(app.Logger);
-
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
 
 app.UseStaticFiles();
 app.UseRouting();
