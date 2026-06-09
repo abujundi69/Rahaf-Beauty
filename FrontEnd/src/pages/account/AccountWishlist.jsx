@@ -21,7 +21,7 @@ function WishlistRow({ product }) {
   const productPath = `/product/${toProductSlug(product)}`;
 
   return (
-    <article className="grid gap-4 rounded-2xl bg-white p-4 shadow-sm sm:grid-cols-[6.5rem_1fr_auto]">
+    <article className="grid gap-4 rounded-[1.2rem] border border-petal/70 bg-white/95 p-4 shadow-sm transition hover:border-clay/40 hover:bg-shell/40 sm:grid-cols-[6.5rem_1fr_auto]">
       <ProductVisual product={product} className="aspect-square" />
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.14em] text-terracotta">
@@ -60,7 +60,7 @@ export default function AccountWishlist() {
 
   return (
     <section className="space-y-4">
-      <div className="rounded-2xl bg-white p-5 shadow-sm">
+      <div className="beauty-shell p-5">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
           {t("wishlist")}
         </p>
@@ -69,7 +69,7 @@ export default function AccountWishlist() {
       {wishlistProducts.length ? (
         wishlistProducts.map((product) => <WishlistRow key={product.id} product={product} />)
       ) : (
-        <div className="rounded-2xl bg-white p-8 text-center shadow-sm">
+        <div className="beauty-shell p-8 text-center">
           <p className="text-sm text-muted">لا توجد مفضلات بعد.</p>
         </div>
       )}

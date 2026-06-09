@@ -67,7 +67,7 @@ export default function Category() {
     <section className="container-page py-10 md:py-14">
       <CategoryHeader category={category} />
 
-      <div className="mb-6 rounded-2xl bg-white p-4 shadow-sm">
+      <div className="mb-6 rounded-[1.35rem] border border-petal/70 bg-white/90 p-4 shadow-card">
         <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm font-bold text-ink">

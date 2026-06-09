@@ -1,4 +1,4 @@
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "../assets/rahaf-hero.png";
 import { useLanguage } from "../context/LanguageContext.jsx";
@@ -8,28 +8,24 @@ export default function Hero() {
   const { t } = useLanguage();
 
   return (
-    <section className="relative isolate overflow-hidden soft-focus">
+    <section className="relative isolate overflow-hidden bg-blush">
       <div className="absolute inset-0 -z-10">
         <img
           src={heroImage}
           alt=""
-          className="h-full w-full object-cover object-center opacity-[0.82]"
+          className="h-full w-full object-cover object-center opacity-95"
         />
-        <div className="absolute inset-0 bg-gradient-to-l from-ivory via-ivory/82 to-ivory/16" />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-blush to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-l from-white via-blush/85 to-white/20" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-ivory to-transparent" />
       </div>
 
-      <div className="container-page grid min-h-[560px] items-center py-14 md:min-h-[640px]">
-        <div className="max-w-2xl">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/82 px-4 py-2 text-sm font-bold text-terracotta shadow-sm">
-            <Sparkles className="h-4 w-4" aria-hidden="true" />
-            {t("beautyCosmetics")}
-          </div>
-          <h1 className="font-display text-5xl font-bold leading-[1.08] text-ink md:text-7xl">
-            حيث تصبح كل لحظة عناية أكثر جمالا.
+      <div className="container-page grid min-h-[520px] items-center py-12 md:min-h-[620px] md:py-16">
+        <div className="max-w-2xl text-right">
+          <h1 className="max-w-2xl text-4xl font-black leading-[1.18] text-ink sm:text-5xl md:text-6xl">
+            جمال ناعم لكل لحظة عناية
           </h1>
-          <p className="mt-6 max-w-xl text-base leading-7 text-muted md:text-lg">
-            عناية ناعمة ومكياج مصقول وطقوس يومية مختارة لروتين هادئ ومضيء.
+          <p className="mt-5 max-w-xl text-base font-semibold leading-8 text-secondary md:text-lg">
+            اختيارات راقية من العناية بالبشرة، المكياج، العطور، ومنتجات الجمال اليومية بتجربة تسوق هادئة ومريحة.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button as={Link} to="/shop" size="lg">

@@ -29,7 +29,7 @@ export default function ProductCard({ product, compact = false }) {
   const productPath = `/product/${toProductSlug(product)}`;
 
   return (
-    <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-petal/70 bg-white p-3 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-terracotta/35 hover:shadow-card">
+    <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[1.35rem] border border-petal/70 bg-white/95 p-3.5 shadow-[0_10px_28px_rgba(190,24,93,0.08)] transition duration-300 hover:-translate-y-1 hover:border-clay/40 hover:shadow-card">
       <div className="relative shrink-0">
         <Link
           to={productPath}
@@ -38,9 +38,12 @@ export default function ProductCard({ product, compact = false }) {
         >
           <ProductVisual
             product={product}
-            className={cn("w-full rounded-xl", compact ? "aspect-square" : "aspect-square")}
+            className={cn(
+              "w-full rounded-[1.1rem] ring-1 ring-petal/50 transition duration-500 group-hover:ring-clay/30 group-hover:[&_img]:scale-[1.04]",
+              compact ? "aspect-square" : "aspect-square",
+            )}
           />
-          <div className="absolute start-2 top-2 flex gap-1.5">
+          <div className="absolute start-2 top-2 flex flex-wrap gap-1.5">
             {pricing.hasDiscount ? <Badge tone="sale">{discountBadge}</Badge> : null}
             {product.isNew ? <Badge tone="new">{t("new")}</Badge> : null}
           </div>
@@ -57,8 +60,8 @@ export default function ProductCard({ product, compact = false }) {
               toggleWishlist(product.id);
             }}
             className={cn(
-              "absolute end-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-white/90 text-muted shadow-sm backdrop-blur transition hover:bg-white hover:text-ink",
-              wished && "bg-clay text-white hover:bg-terracotta hover:text-white",
+              "absolute end-2 top-2 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-muted shadow-sm ring-1 ring-petal/60 backdrop-blur transition hover:scale-105 hover:bg-shell hover:text-terracotta",
+              wished && "bg-clay text-white ring-clay hover:bg-terracotta hover:text-white",
             )}
             aria-label={t("wishlist")}
           >
@@ -71,17 +74,17 @@ export default function ProductCard({ product, compact = false }) {
         ) : null}
       </div>
 
-      <div className="flex flex-1 flex-col pt-3">
+      <div className="flex flex-1 flex-col pt-3.5">
         <Link to={productPath} className="block min-w-0">
-          <p className="h-4 truncate text-[0.68rem] font-bold uppercase text-terracotta">
+          <p className="h-4 truncate text-[0.68rem] font-extrabold uppercase tracking-[0.16em] text-terracotta">
             {getBrandName(product.brand)}
           </p>
-          <h3 className="line-clamp-2 mt-1 min-h-[2.5rem] text-[0.94rem] font-extrabold leading-5 text-ink transition group-hover:text-terracotta">
+          <h3 className="line-clamp-2 mt-1.5 min-h-[2.6rem] text-[0.98rem] font-extrabold leading-5 text-ink transition group-hover:text-terracotta">
             {name}
           </h3>
         </Link>
 
-        <div className="mt-2 flex min-h-5 items-center justify-between gap-2">
+        <div className="mt-3 flex min-h-5 items-center justify-between gap-2">
           <RatingStars rating={product.rating} reviewCount={product.reviewCount} compact />
           <span className="truncate text-[0.7rem] font-semibold text-muted">
             {translateAvailability(product.availability, t)}
@@ -89,8 +92,8 @@ export default function ProductCard({ product, compact = false }) {
         </div>
 
         <div className="mt-auto pt-4">
-          <div className="min-w-0">
-            <p className="text-base font-extrabold leading-none text-ink">
+          <div className="min-w-0 rounded-2xl bg-ivory/80 px-3 py-2.5 ring-1 ring-petal/50">
+            <p className="text-lg font-extrabold leading-none text-ink">
               {formatPrice(pricing.finalPrice, language)}
             </p>
             {pricing.hasDiscount ? (
@@ -104,7 +107,7 @@ export default function ProductCard({ product, compact = false }) {
           <div className="mt-3 h-10">
             <Link
               to={productPath}
-              className="inline-flex h-10 w-full min-w-0 items-center justify-center gap-1.5 rounded-xl bg-charcoal px-3 text-xs font-extrabold text-white transition hover:bg-ink"
+              className="inline-flex h-10 w-full min-w-0 items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-clay to-terracotta px-3 text-xs font-extrabold text-white shadow-[0_10px_22px_rgba(219,39,119,0.2)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_28px_rgba(219,39,119,0.26)]"
             >
               <Eye className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
               <span className="truncate">{t("viewProduct")}</span>

@@ -12,7 +12,7 @@ function Field({ label, value, onChange, type = "text" }) {
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 h-11 w-full rounded-2xl bg-ivory px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+        className="mt-2 h-11 w-full rounded-full bg-ivory px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
       />
     </label>
   );
@@ -44,7 +44,7 @@ export default function AccountProfile() {
   };
 
   return (
-    <section className="rounded-2xl bg-white p-5 shadow-sm md:p-6">
+    <section className="beauty-shell p-5 md:p-6">
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
         {t("profileInformation")}
       </p>

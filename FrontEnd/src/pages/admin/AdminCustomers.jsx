@@ -49,7 +49,7 @@ export default function AdminCustomers() {
   }, [customers, query]);
 
   return (
-    <section className="min-w-0 rounded-2xl bg-white p-5 shadow-sm">
+    <section className="beauty-shell min-w-0 p-5">
       <div className="mb-5">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
           {t("customersManagement")}
@@ -68,22 +68,22 @@ export default function AdminCustomers() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={t("search")}
-          className="h-11 w-full rounded-2xl bg-ivory pe-4 ps-11 text-sm font-semibold text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+          className="h-11 w-full rounded-full bg-ivory pe-4 ps-11 text-sm font-semibold text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
         />
       </label>
       <div className="grid gap-3">
         {loading ? (
-          <div className="rounded-2xl bg-ivory p-8 text-center text-sm font-bold text-muted">
+          <div className="rounded-2xl bg-shell p-8 text-center text-sm font-bold text-muted">
             {t("loading")}
           </div>
         ) : null}
         {!loading && !error && visibleCustomers.length === 0 ? (
-          <div className="rounded-2xl bg-ivory p-8 text-center text-sm font-bold text-muted">
+          <div className="rounded-2xl bg-shell p-8 text-center text-sm font-bold text-muted">
             {t("noData")}
           </div>
         ) : null}
         {visibleCustomers.map((customer) => (
-          <article key={customer.id} className="grid gap-4 rounded-2xl bg-ivory p-4 md:grid-cols-[1fr_auto]">
+          <article key={customer.id} className="grid gap-4 rounded-[1.2rem] border border-petal/60 bg-white/95 p-4 shadow-sm transition hover:border-clay/40 hover:bg-shell/40 md:grid-cols-[1fr_auto]">
             <div className="grid gap-3 md:grid-cols-4">
               <div>
                 <p className="font-extrabold text-ink">{customer.fullName}</p>
@@ -104,7 +104,7 @@ export default function AdminCustomers() {
               <button
                 type="button"
                 onClick={() => setSelectedCustomer(customer)}
-                className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink shadow-sm hover:bg-petal"
+                className="grid h-9 w-9 place-items-center rounded-full bg-shell text-terracotta shadow-sm hover:bg-petal/80"
                 aria-label={t("viewDetails")}
               >
                 <Eye className="h-4 w-4" aria-hidden="true" />
@@ -115,8 +115,8 @@ export default function AdminCustomers() {
       </div>
 
       {selectedCustomer ? (
-        <div className="fixed inset-0 z-[150] grid place-items-center bg-ink/35 p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-soft">
+        <div className="fixed inset-0 z-[150] grid place-items-center bg-ink/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-[1.5rem] border border-petal bg-white p-6 shadow-soft">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
               {t("customerDetails")}
             </p>

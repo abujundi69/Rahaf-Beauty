@@ -49,7 +49,7 @@ export default function AccountOrderDetails() {
 
   if (!order) {
     return (
-      <section className="rounded-2xl bg-white p-8 text-center shadow-sm">
+      <section className="beauty-shell p-8 text-center">
         <h2 className="font-display text-3xl font-bold text-ink">
           {loading ? t("loading") : t("orderDetails")}
         </h2>
@@ -64,7 +64,7 @@ export default function AccountOrderDetails() {
   const activeStepIndex = orderStatusSteps.indexOf(order.status);
 
   return (
-    <section className="rounded-2xl bg-white p-5 shadow-sm md:p-6">
+    <section className="beauty-shell p-5 md:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
@@ -78,7 +78,7 @@ export default function AccountOrderDetails() {
         </span>
       </div>
 
-      <div className="mt-6 rounded-2xl bg-ivory p-4">
+      <div className="mt-6 rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4">
         <p className="text-sm font-extrabold text-ink">{t("statusTimeline")}</p>
         <div className="mt-4 grid gap-3 sm:grid-cols-3 xl:grid-cols-6">
           {orderStatusSteps.map((status, index) => {
@@ -87,7 +87,7 @@ export default function AccountOrderDetails() {
               <div
                 key={status}
                 className={`rounded-2xl border p-3 text-xs font-bold ${
-                  reached ? "border-terracotta bg-white text-ink" : "border-petal bg-white/60 text-muted"
+                  reached ? "border-terracotta bg-white text-ink shadow-sm" : "border-petal bg-white/60 text-muted"
                 }`}
               >
                 {translateOrderStatus(status, t)}
@@ -103,7 +103,7 @@ export default function AccountOrderDetails() {
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        <section className="rounded-2xl bg-ivory p-4">
+        <section className="rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4">
           <p className="text-sm font-extrabold text-ink">{t("deliveryAddress")}</p>
           <div className="mt-3 text-sm leading-7 text-muted">
             <p className="font-bold text-ink">{order.deliveryAddress?.fullName}</p>
@@ -116,7 +116,7 @@ export default function AccountOrderDetails() {
             {order.deliveryAddress?.notes ? <p>{order.deliveryAddress.notes}</p> : null}
           </div>
         </section>
-        <section className="rounded-2xl bg-ivory p-4">
+        <section className="rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4">
           <p className="text-sm font-extrabold text-ink">{t("paymentMethod")}</p>
           <div className="mt-3 text-sm leading-7 text-muted">
             <p>{getPaymentMethodLabel(order.paymentMethod, t)}</p>
@@ -127,7 +127,7 @@ export default function AccountOrderDetails() {
 
       <div className="mt-6 space-y-3">
         {order.items.map((item) => (
-          <div key={item.id ?? item.name} className="rounded-2xl bg-ivory p-4">
+          <div key={item.id ?? item.name} className="rounded-2xl border border-petal/50 bg-ivory/80 p-4">
             <div className="flex justify-between gap-4">
               <span className="font-bold text-ink">
                 {language === "ar" ? item.nameAr || item.name : item.nameEn || item.name}
@@ -152,7 +152,7 @@ export default function AccountOrderDetails() {
         ))}
       </div>
 
-      <div className="mt-6 grid gap-3 rounded-2xl bg-ink p-4 text-white">
+      <div className="mt-6 grid gap-3 rounded-2xl bg-gradient-to-r from-charcoal to-terracotta p-4 text-white shadow-card">
         <div className="flex justify-between text-sm">
           <span>{t("subtotal")}</span>
           <span>{formatPrice(order.subtotal ?? order.total, language)}</span>

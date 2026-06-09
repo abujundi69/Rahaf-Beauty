@@ -16,7 +16,7 @@ export default function AuthRequiredModal({ open, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[150] grid place-items-center bg-ink/35 p-4">
+    <div className="fixed inset-0 z-[150] grid place-items-center bg-ink/50 p-4 backdrop-blur-sm">
       <button
         type="button"
         className="absolute inset-0"
@@ -24,7 +24,7 @@ export default function AuthRequiredModal({ open, onClose }) {
         onClick={onClose}
       />
       <section
-        className="relative w-full max-w-md rounded-2xl border border-petal bg-white p-6 text-center shadow-soft md:p-7"
+        className="relative w-full max-w-md rounded-[1.5rem] border border-petal bg-white p-6 text-center shadow-soft md:p-7"
         role="dialog"
         aria-modal="true"
         aria-labelledby="auth-required-title"
@@ -32,12 +32,12 @@ export default function AuthRequiredModal({ open, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="absolute end-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-ivory text-muted transition hover:bg-petal hover:text-ink"
+          className="absolute end-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-shell text-muted transition hover:bg-petal hover:text-terracotta"
           aria-label={t("cancel")}
         >
           <X className="h-4 w-4" aria-hidden="true" />
         </button>
-        <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-petal text-terracotta">
+        <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-shell text-terracotta ring-1 ring-petal/70">
           <LogIn className="h-5 w-5" aria-hidden="true" />
         </span>
         <h2 id="auth-required-title" className="mt-5 font-display text-3xl font-bold text-ink">

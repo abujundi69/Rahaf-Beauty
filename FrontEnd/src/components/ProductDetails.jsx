@@ -75,7 +75,7 @@ export default function ProductDetails({ product, relatedProducts = [], onProduc
         <div className="grid gap-10 lg:grid-cols-[1fr_0.9fr]">
           <ProductGallery product={product} />
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm md:p-8">
+          <div className="beauty-shell p-6 md:p-8">
             <div className="flex flex-wrap gap-2">
               {pricing.hasDiscount ? <Badge tone="sale">{discountBadge}</Badge> : null}
               {product.isNew ? <Badge tone="new">{t("new")}</Badge> : null}
@@ -124,7 +124,7 @@ export default function ProductDetails({ product, relatedProducts = [], onProduc
                             className={cn(
                               "inline-flex min-h-11 items-center gap-2 rounded-2xl border px-3 text-sm font-bold transition",
                               selected
-                                ? "border-ink bg-ink text-white"
+                                ? "border-clay bg-gradient-to-r from-clay to-terracotta text-white shadow-sm"
                                 : "border-petal bg-ivory text-ink hover:border-terracotta",
                             )}
                           >
@@ -163,7 +163,7 @@ export default function ProductDetails({ product, relatedProducts = [], onProduc
                             className={cn(
                               "min-h-11 rounded-2xl border px-4 py-2 text-sm font-extrabold transition",
                               selected
-                                ? "border-ink bg-ink text-white"
+                                ? "border-clay bg-gradient-to-r from-clay to-terracotta text-white shadow-sm"
                                 : "border-petal bg-ivory text-ink hover:border-terracotta",
                             )}
                           >
@@ -235,7 +235,7 @@ export default function ProductDetails({ product, relatedProducts = [], onProduc
                 </Button>
               </div>
             ) : (
-              <div className="mt-7 rounded-2xl bg-ivory px-4 py-3 text-sm font-bold text-muted">
+              <div className="mt-7 rounded-2xl border border-petal/60 bg-ivory/80 px-4 py-3 text-sm font-bold text-muted">
                 {t("adminShoppingBlocked")}
               </div>
             )}
@@ -243,7 +243,7 @@ export default function ProductDetails({ product, relatedProducts = [], onProduc
           </div>
         </div>
 
-        <div className="mt-10 rounded-2xl bg-white p-5 shadow-sm md:p-7">
+        <div className="mt-10 beauty-shell p-5 md:p-7">
           <div className="flex flex-wrap gap-2 border-b border-petal pb-4">
             {tabs.map((tab) => (
               <button
@@ -253,8 +253,8 @@ export default function ProductDetails({ product, relatedProducts = [], onProduc
                 className={cn(
                   "rounded-full px-4 py-2 text-sm font-bold transition",
                   activeTab === tab.id
-                    ? "bg-clay text-white"
-                    : "bg-ivory text-muted hover:text-ink",
+                    ? "bg-gradient-to-r from-clay to-terracotta text-white shadow-sm"
+                    : "bg-ivory text-muted hover:bg-shell hover:text-ink",
                 )}
               >
                 {tab.label}

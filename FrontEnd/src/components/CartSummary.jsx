@@ -15,7 +15,7 @@ export default function CartSummary({
   const total = backendTotal ?? calculatedTotal;
 
   return (
-    <section className="rounded-2xl bg-white p-6 shadow-sm">
+    <section className="beauty-shell p-6">
       <h2 className="font-display text-2xl font-bold text-ink">{t("orderSummary")}</h2>
       <div className="mt-6 space-y-4 text-sm">
         <div className="flex justify-between text-muted">
@@ -42,7 +42,7 @@ export default function CartSummary({
             <span className="font-semibold text-sale">-{formatPrice(discountTotal, language)}</span>
           </div>
         ) : null}
-        <div className="h-px bg-petal" />
+        <div className="h-px bg-petal/70" />
         <div className="flex justify-between text-base font-extrabold text-ink">
           <span>{t("total")}</span>
           <span>{formatPrice(total, language)}</span>

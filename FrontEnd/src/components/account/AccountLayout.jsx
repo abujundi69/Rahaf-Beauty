@@ -10,7 +10,7 @@ export default function AccountLayout() {
 
   return (
     <section className="container-page py-10 md:py-14">
-      <div className="mb-8 rounded-2xl bg-white p-6 shadow-sm">
+      <div className="mb-8 rounded-[1.5rem] border border-petal/70 bg-white/95 p-6 shadow-card">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
@@ -27,7 +27,7 @@ export default function AccountLayout() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
+      <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
         <AccountSidebar />
 
         <div className="min-w-0">

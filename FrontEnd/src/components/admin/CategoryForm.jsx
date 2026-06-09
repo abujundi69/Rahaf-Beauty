@@ -26,7 +26,7 @@ function Field({ label, value, onChange, as = "input" }) {
       <Component
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 w-full rounded-2xl bg-white px-4 py-3 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+        className="mt-2 w-full rounded-[1.1rem] bg-white px-4 py-3 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
       />
     </label>
   );
@@ -121,7 +121,7 @@ export default function CategoryForm({ category, mode = "add" }) {
   };
 
   return (
-    <form onSubmit={submit} className="min-w-0 rounded-2xl bg-white p-5 shadow-sm md:p-6">
+    <form onSubmit={submit} className="beauty-shell min-w-0 p-5 md:p-6">
       <div className="mb-6">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
           {mode === "edit" ? t("editCategory") : t("addCategory")}
@@ -137,7 +137,7 @@ export default function CategoryForm({ category, mode = "add" }) {
           <select
             value={form.status ?? "Active"}
             onChange={(event) => update("status", event.target.value)}
-            className="mt-2 h-12 w-full rounded-2xl bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+            className="mt-2 h-12 w-full rounded-full bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
           >
             <option value="Active">{t("active")}</option>
             <option value="Draft">{t("draft")}</option>
@@ -153,9 +153,9 @@ export default function CategoryForm({ category, mode = "add" }) {
           <p className="text-sm font-bold text-ink">{t("categoryImage")}</p>
           <label
             htmlFor={imageInputId}
-            className="mt-2 flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-petal bg-white px-5 py-6 text-center transition hover:border-terracotta hover:bg-shell/55"
+            className="mt-2 flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-[1.2rem] border border-dashed border-petal bg-white px-5 py-6 text-center transition hover:border-clay hover:bg-shell/50"
           >
-            <span className="grid h-12 w-12 place-items-center rounded-full bg-shell text-ink">
+            <span className="grid h-12 w-12 place-items-center rounded-full bg-shell text-terracotta ring-1 ring-petal/70">
               <ImagePlus className="h-5 w-5" aria-hidden="true" />
             </span>
             <span className="mt-3 text-sm font-extrabold text-ink">
@@ -177,7 +177,7 @@ export default function CategoryForm({ category, mode = "add" }) {
             />
           </label>
           {imagePreview ? (
-            <div className="mt-3 flex items-center gap-3 rounded-2xl bg-ivory p-3">
+            <div className="mt-3 flex items-center gap-3 rounded-2xl border border-petal/60 bg-ivory/80 p-3">
               <span className="grid h-24 w-32 shrink-0 place-items-center overflow-hidden rounded-xl border border-petal bg-white">
                 <img src={imagePreview} alt="" className="h-full w-full object-contain p-1.5" />
               </span>

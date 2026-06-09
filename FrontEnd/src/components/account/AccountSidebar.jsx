@@ -22,7 +22,7 @@ export default function AccountSidebar() {
   };
 
   return (
-    <aside className="rounded-2xl bg-white p-3 shadow-sm">
+    <aside className="beauty-sidebar rounded-[1.35rem] p-3">
       <div className="grid gap-2">
         {links.map((link) => {
           const Icon = link.icon;
@@ -34,7 +34,7 @@ export default function AccountSidebar() {
               end={link.end}
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold transition ${
-                  isActive ? "bg-shell text-ink" : "text-muted hover:bg-ivory hover:text-ink"
+                  isActive ? "bg-white text-terracotta shadow-sm" : "text-white/80 hover:bg-white/20 hover:text-white"
                 }`
               }
             >
@@ -46,7 +46,7 @@ export default function AccountSidebar() {
         <button
           type="button"
           onClick={handleLogout}
-          className="flex items-center gap-3 rounded-2xl px-4 py-3 text-start text-sm font-bold text-muted transition hover:bg-ivory hover:text-ink"
+          className="flex items-center gap-3 rounded-2xl px-4 py-3 text-start text-sm font-bold text-white/80 transition hover:bg-white/20 hover:text-white"
         >
           <LogOut className="h-4 w-4" aria-hidden="true" />
           {t("logout")}

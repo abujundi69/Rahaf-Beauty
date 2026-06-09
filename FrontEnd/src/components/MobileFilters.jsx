@@ -23,7 +23,7 @@ export default function MobileFilters(props) {
         <div className="fixed inset-0 z-[110] lg:hidden">
           <button
             type="button"
-            className="fixed inset-0 bg-ink/35"
+            className="fixed inset-0 bg-ink/50 backdrop-blur-sm"
             aria-label={t("filters")}
             onClick={() => setOpen(false)}
           />

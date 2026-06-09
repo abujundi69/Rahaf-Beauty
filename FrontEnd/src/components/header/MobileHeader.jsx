@@ -38,7 +38,7 @@ export default function MobileHeader({ onOpenMenu }) {
         <button
           type="button"
           onClick={onOpenMenu}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-ink shadow-sm ring-1 ring-petal/70"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-r from-clay to-terracotta text-white shadow-card ring-1 ring-white/30"
           aria-label={t("menu")}
         >
           <Menu className="h-5 w-5" aria-hidden="true" />

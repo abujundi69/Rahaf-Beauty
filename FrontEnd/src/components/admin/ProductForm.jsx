@@ -64,7 +64,7 @@ function Field({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         aria-invalid={Boolean(error)}
-        className="mt-2 w-full rounded-2xl bg-white px-4 py-3 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+        className="mt-2 w-full rounded-[1.1rem] bg-white px-4 py-3 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
         {...props}
       />
       {error ? <span className="mt-2 block text-xs font-bold text-sale">{error}</span> : null}
@@ -348,7 +348,7 @@ export default function ProductForm({ product, mode = "add" }) {
   };
 
   return (
-    <form onSubmit={submit} className="min-w-0 rounded-2xl bg-white p-5 shadow-sm md:p-6">
+    <form onSubmit={submit} className="beauty-shell min-w-0 p-5 md:p-6">
       <div className="mb-6">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
           {mode === "edit" ? t("editProduct") : t("addProduct")}
@@ -370,7 +370,7 @@ export default function ProductForm({ product, mode = "add" }) {
           <select
             value={form.brandId}
             onChange={(event) => update("brandId", event.target.value)}
-            className="mt-2 h-12 w-full rounded-2xl bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+            className="mt-2 h-12 w-full rounded-full bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
             aria-invalid={Boolean(errors.brandId)}
           >
             <option value="">اختاري البراند</option>
@@ -387,7 +387,7 @@ export default function ProductForm({ product, mode = "add" }) {
           <select
             value={form.categoryId}
             onChange={(event) => update("categoryId", event.target.value)}
-            className="mt-2 h-12 w-full rounded-2xl bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+            className="mt-2 h-12 w-full rounded-full bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
             aria-invalid={Boolean(errors.categoryId)}
           >
             <option value="">اختاري التصنيف</option>
@@ -405,14 +405,14 @@ export default function ProductForm({ product, mode = "add" }) {
           <select
             value={form.status}
             onChange={(event) => update("status", event.target.value)}
-            className="mt-2 h-12 w-full rounded-2xl bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+            className="mt-2 h-12 w-full rounded-full bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
           >
             <option value="Active">{t("active")}</option>
             <option value="Draft">{t("draft")}</option>
           </select>
         </label>
 
-        <section className="rounded-2xl bg-ivory p-4 md:col-span-2">
+        <section className="rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4 md:col-span-2">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-sm font-extrabold text-ink">{t("availableColors")}</p>
@@ -424,7 +424,7 @@ export default function ProductForm({ product, mode = "add" }) {
           </div>
           <div className="mt-4 grid gap-3">
             {(form.colors ?? []).map((color) => (
-              <div key={color.id} className="grid gap-3 rounded-2xl bg-white p-3 md:grid-cols-[1fr_7rem_auto] md:items-end">
+              <div key={color.id} className="grid gap-3 rounded-2xl border border-petal/50 bg-white p-3 md:grid-cols-[1fr_7rem_auto] md:items-end">
                 <Field
                   label={t("colorNameArabic")}
                   value={color.nameAr ?? ""}
@@ -440,7 +440,7 @@ export default function ProductForm({ product, mode = "add" }) {
           </div>
         </section>
 
-        <section className="rounded-2xl bg-ivory p-4 md:col-span-2">
+        <section className="rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4 md:col-span-2">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-sm font-extrabold text-ink">{t("availableSizes")}</p>
@@ -452,7 +452,7 @@ export default function ProductForm({ product, mode = "add" }) {
           </div>
           <div className="mt-4 grid gap-3">
             {(form.sizes ?? []).map((size) => (
-              <div key={size.id} className="rounded-2xl bg-white p-3">
+              <div key={size.id} className="rounded-2xl border border-petal/50 bg-white p-3">
                 <div className="grid gap-3 md:grid-cols-[1fr_10rem_auto] md:items-end">
                   <Field label={t("sizeLabel")} value={size.label ?? ""} onChange={(value) => updateSize(size.id, "label", value)} />
                   <Field label={t("sizePrice")} type="number" min="0" step="0.01" value={size.price ?? ""} onChange={(value) => updateSize(size.id, "price", value)} />
@@ -477,7 +477,7 @@ export default function ProductForm({ product, mode = "add" }) {
           onImagesChange={updateImages}
           onVideoChange={updateVideo}
         />
-        <div className="grid gap-3 rounded-2xl bg-ivory p-4">
+        <div className="grid gap-3 rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4">
           <label className="flex items-center gap-3 text-sm font-bold text-ink">
             <input
               type="checkbox"

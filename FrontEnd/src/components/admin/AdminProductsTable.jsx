@@ -49,7 +49,7 @@ export default function AdminProductsTable() {
   };
 
   return (
-    <section className="min-w-0 rounded-2xl bg-white p-5 shadow-sm">
+    <section className="beauty-shell min-w-0 p-5">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
@@ -72,13 +72,13 @@ export default function AdminProductsTable() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={t("searchProducts")}
-            className="h-11 w-full rounded-2xl bg-ivory pe-4 ps-11 text-sm text-ink outline-none focus:ring-4 focus:ring-shell/25"
+            className="h-11 w-full rounded-full bg-ivory pe-4 ps-11 text-sm font-semibold text-ink outline-none focus:ring-4 focus:ring-shell/70"
           />
         </label>
         <select
           value={categoryId}
           onChange={(event) => setCategoryId(event.target.value)}
-          className="h-11 rounded-2xl bg-ivory px-4 text-sm font-semibold text-ink outline-none focus:ring-4 focus:ring-shell/25"
+          className="h-11 rounded-full bg-ivory px-4 text-sm font-semibold text-ink outline-none focus:ring-4 focus:ring-shell/70"
         >
           <option value="">{t("categories")}</option>
           {categories.map((category) => (
@@ -89,7 +89,7 @@ export default function AdminProductsTable() {
         </select>
       </div>
 
-      <div className="max-w-full overflow-x-auto">
+      <div className="beauty-table-wrap max-w-full overflow-x-auto p-2">
         <table className="w-full min-w-[680px] border-separate border-spacing-y-2 text-sm">
           <thead className="text-start text-xs uppercase tracking-[0.14em] text-muted">
             <tr>
@@ -104,7 +104,7 @@ export default function AdminProductsTable() {
             {filteredProducts.map((product) => {
               const pricing = calculateProductPricing(product, settings);
               return (
-              <tr key={product.id} className="bg-ivory">
+              <tr key={product.id} className="bg-white/95 transition hover:bg-shell/50">
                 <td className="rounded-s-2xl px-4 py-3">
                   <div className="flex items-center gap-3">
                     <ProductVisual product={product} className="h-14 w-14 shrink-0 rounded-xl" />
@@ -136,14 +136,14 @@ export default function AdminProductsTable() {
                   <div className="flex justify-end gap-2">
                     <Link
                       to={`/admin/products/${product.id}`}
-                      className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink shadow-sm hover:bg-petal"
+                      className="grid h-9 w-9 place-items-center rounded-full bg-shell text-terracotta shadow-sm transition hover:bg-petal/80"
                       aria-label={t("productPreview")}
                     >
                       <Eye className="h-4 w-4" aria-hidden="true" />
                     </Link>
                     <Link
                       to={`/admin/products/${product.id}/edit`}
-                      className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink shadow-sm hover:bg-petal"
+                      className="grid h-9 w-9 place-items-center rounded-full bg-shell text-terracotta shadow-sm transition hover:bg-petal/80"
                       aria-label={t("editProduct")}
                     >
                       <Edit3 className="h-4 w-4" aria-hidden="true" />
@@ -160,7 +160,7 @@ export default function AdminProductsTable() {
                         <button
                           type="button"
                           onClick={() => setPendingDeleteId("")}
-                          className="rounded-full bg-white px-3 py-2 text-xs font-bold text-muted shadow-sm hover:bg-petal hover:text-ink"
+                          className="rounded-full bg-white px-3 py-2 text-xs font-bold text-muted shadow-sm hover:bg-shell hover:text-ink"
                         >
                           {t("cancel")}
                         </button>
@@ -169,7 +169,7 @@ export default function AdminProductsTable() {
                       <button
                         type="button"
                         onClick={() => setPendingDeleteId(product.id)}
-                        className="grid h-9 w-9 place-items-center rounded-full bg-white text-muted shadow-sm hover:bg-sale hover:text-white"
+                        className="grid h-9 w-9 place-items-center rounded-full bg-white text-muted shadow-sm transition hover:bg-sale hover:text-white"
                         aria-label={t("deleteProduct")}
                       >
                         <Trash2 className="h-4 w-4" aria-hidden="true" />

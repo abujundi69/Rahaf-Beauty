@@ -17,7 +17,7 @@ function MenuItem({ to, icon: Icon, children, onClick }) {
     <Link
       to={to}
       onClick={onClick}
-      className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-bold text-muted transition hover:bg-ivory hover:text-ink"
+      className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-bold text-muted transition hover:bg-shell/75 hover:text-terracotta"
     >
       <Icon className="h-4 w-4 shrink-0 text-terracotta" aria-hidden="true" />
       <span>{children}</span>
@@ -53,7 +53,7 @@ export default function UserMenu({ className = "" }) {
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="grid h-10 w-10 place-items-center rounded-full bg-white text-ink shadow-sm ring-1 ring-petal/70 transition hover:bg-petal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+        className="grid h-10 w-10 place-items-center rounded-full bg-white text-ink shadow-sm ring-1 ring-petal/70 transition hover:-translate-y-0.5 hover:bg-shell hover:text-terracotta hover:shadow-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
         aria-label={t("userMenu")}
         aria-expanded={open}
         title={user?.fullName}
@@ -62,8 +62,8 @@ export default function UserMenu({ className = "" }) {
       </button>
 
       {open ? (
-        <div className="absolute end-0 top-full z-[90] mt-3 w-60 max-w-[calc(100vw-2rem)] rounded-2xl border border-petal bg-white p-2 shadow-soft">
-          <div className="border-b border-petal px-3 py-3">
+        <div className="absolute end-0 top-full z-[90] mt-3 w-64 max-w-[calc(100vw-2rem)] rounded-[1.35rem] border border-petal bg-white/95 p-2 shadow-soft backdrop-blur">
+          <div className="rounded-2xl border border-petal/60 bg-shell/60 px-3 py-3">
             <p className="truncate text-sm font-extrabold text-ink">{user?.fullName}</p>
             <p className="mt-1 truncate text-xs font-semibold text-muted">{user?.phoneNumber}</p>
           </div>
@@ -99,7 +99,7 @@ export default function UserMenu({ className = "" }) {
             <button
               type="button"
               onClick={handleLogout}
-              className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-start text-sm font-bold text-muted transition hover:bg-ivory hover:text-ink"
+              className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-start text-sm font-bold text-muted transition hover:bg-shell/75 hover:text-terracotta"
             >
               <LogOut className="h-4 w-4 shrink-0 text-terracotta" aria-hidden="true" />
               <span>{t("logout")}</span>

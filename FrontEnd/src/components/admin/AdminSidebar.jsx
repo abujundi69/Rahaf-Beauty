@@ -36,10 +36,10 @@ export default function AdminSidebar({ onNavigate, className = "" }) {
   };
 
   return (
-    <aside className={cn("rounded-2xl bg-white p-3 shadow-sm", className)}>
+    <aside className={cn("beauty-sidebar rounded-[1.35rem] p-3", className)}>
       <div className="px-3 py-4">
-        <BrandMark logoSize="sidebar" textClassName="text-sm" />
-        <span className="mt-2 block text-xs font-bold uppercase tracking-[0.18em] text-muted">
+        <BrandMark logoSize="sidebar" textClassName="text-sm text-white" />
+        <span className="mt-2 block text-xs font-bold uppercase tracking-[0.18em] text-white/60">
           لوحة الإدارة
         </span>
       </div>
@@ -54,7 +54,7 @@ export default function AdminSidebar({ onNavigate, className = "" }) {
               onClick={onNavigate}
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold transition ${
-                  isActive ? "bg-shell text-ink" : "text-muted hover:bg-ivory hover:text-ink"
+                  isActive ? "bg-white text-terracotta shadow-sm" : "text-white/80 hover:bg-white/20 hover:text-white"
                 }`
               }
             >
@@ -66,7 +66,7 @@ export default function AdminSidebar({ onNavigate, className = "" }) {
         <Link
           to="/"
           onClick={onNavigate}
-          className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-muted transition hover:bg-ivory hover:text-ink"
+          className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-white/80 transition hover:bg-white/20 hover:text-white"
         >
           <Store className="h-4 w-4" aria-hidden="true" />
           {t("backToStore")}
@@ -74,7 +74,7 @@ export default function AdminSidebar({ onNavigate, className = "" }) {
         <button
           type="button"
           onClick={handleLogout}
-          className="flex items-center gap-3 rounded-2xl px-4 py-3 text-start text-sm font-bold text-muted transition hover:bg-ivory hover:text-ink"
+          className="flex items-center gap-3 rounded-2xl px-4 py-3 text-start text-sm font-bold text-white/80 transition hover:bg-white/20 hover:text-white"
         >
           <LogOut className="h-4 w-4" aria-hidden="true" />
           {t("logout")}

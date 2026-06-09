@@ -33,7 +33,7 @@ export default function Cart() {
   if (isAdmin) {
     return (
       <section className="container-page py-16 text-center">
-        <div className="mx-auto max-w-xl rounded-2xl bg-white p-8 shadow-sm">
+        <div className="mx-auto max-w-xl beauty-shell p-8">
           <h1 className="font-display text-3xl font-bold text-ink">
             {t("notAvailableForAdmin")}
           </h1>
@@ -70,7 +70,7 @@ export default function Cart() {
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-4">
           {cartDetailed.length === 0 ? (
-            <div className="rounded-2xl bg-white p-10 text-center shadow-sm">
+            <div className="beauty-shell p-10 text-center">
               <h2 className="font-display text-3xl font-bold text-ink">
                 سلتك فارغة
               </h2>
@@ -82,7 +82,7 @@ export default function Cart() {
             cartDetailed.map((item) => (
                 <article
                   key={item.id}
-                  className="grid gap-4 rounded-2xl bg-white p-4 shadow-sm sm:grid-cols-[8rem_1fr_auto]"
+                  className="grid gap-4 rounded-[1.25rem] border border-petal/70 bg-white/95 p-4 shadow-sm transition hover:border-clay/40 hover:bg-shell/40 sm:grid-cols-[8rem_1fr_auto]"
                 >
                   <ProductVisual product={item.product} className="aspect-square" />
                   <div>
@@ -127,7 +127,7 @@ export default function Cart() {
                     <button
                       type="button"
                       onClick={() => removeFromCart(item.id)}
-                      className="grid h-10 w-10 place-items-center rounded-full bg-petal text-muted transition hover:bg-terracotta hover:text-white"
+                      className="grid h-10 w-10 place-items-center rounded-full bg-shell text-muted transition hover:bg-sale hover:text-white"
                       aria-label={t("remove")}
                     >
                       <Trash2 className="h-4 w-4" aria-hidden="true" />

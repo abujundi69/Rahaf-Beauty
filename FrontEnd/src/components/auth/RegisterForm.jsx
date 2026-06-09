@@ -39,7 +39,7 @@ function Field({
           value={value}
           onChange={(event) => onChange(event.target.value)}
           aria-invalid={Boolean(error)}
-          className="h-12 w-full rounded-2xl bg-ivory pe-4 ps-11 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+          className="h-12 w-full rounded-full bg-ivory pe-4 ps-11 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
         />
       </span>
       {error ? (
@@ -125,9 +125,9 @@ export default function RegisterForm() {
     <form
       onSubmit={submit}
       noValidate
-      className="rounded-2xl border border-petal/70 bg-white p-6 shadow-soft md:p-8"
+      className="rounded-[1.5rem] border border-petal/70 bg-white/95 p-6 shadow-soft md:p-8"
     >
-      <div className="mb-6 flex items-center gap-4 rounded-2xl border border-petal bg-blush p-3">
+      <div className="mb-6 flex items-center gap-4 rounded-[1.2rem] border border-petal bg-shell/70 p-3">
         <BrandLogo size="drawer" className="rounded-xl bg-white p-1 ring-1 ring-petal" />
         <div className="min-w-0">
           <p className="truncate text-sm font-extrabold tracking-wide text-ink">

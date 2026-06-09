@@ -33,7 +33,7 @@ export default function QuantitySelector({
   return (
     <div
       className={cn(
-        "inline-flex items-center bg-ivory",
+        "inline-flex items-center border border-petal/60 bg-ivory",
         wrapperClass,
         disabled && "opacity-50",
       )}
@@ -43,7 +43,7 @@ export default function QuantitySelector({
         onClick={decrease}
         disabled={disabled || value <= 1}
         className={cn(
-          "grid place-items-center text-muted transition hover:bg-white hover:text-ink disabled:cursor-not-allowed disabled:opacity-40",
+          "grid place-items-center text-muted transition hover:bg-white hover:text-terracotta disabled:cursor-not-allowed disabled:opacity-40",
           buttonClass,
         )}
         aria-label="-"
@@ -63,7 +63,7 @@ export default function QuantitySelector({
         onClick={increase}
         disabled={disabled || value >= max}
         className={cn(
-          "grid place-items-center text-muted transition hover:bg-white hover:text-ink disabled:cursor-not-allowed disabled:opacity-40",
+          "grid place-items-center text-muted transition hover:bg-white hover:text-terracotta disabled:cursor-not-allowed disabled:opacity-40",
           buttonClass,
         )}
         aria-label="+"

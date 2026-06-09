@@ -24,7 +24,7 @@ export default function Home() {
       <section className="container-page py-10">
         <SectionHeader title="الأكثر طلباً" />
         {loading ? (
-          <div className="rounded-2xl border border-petal/70 bg-white p-10 text-center text-sm font-bold text-muted shadow-sm">
+          <div className="beauty-shell p-10 text-center text-sm font-bold text-muted">
             جاري التحميل...
           </div>
         ) : error ? (

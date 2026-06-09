@@ -12,7 +12,7 @@ export default function AdminProductFormPage({ mode = "add" }) {
 
   if (mode === "edit" && !product) {
     return (
-      <section className="rounded-2xl bg-white p-8 text-center shadow-sm">
+      <section className="beauty-shell p-8 text-center">
         <h2 className="font-display text-3xl font-bold text-ink">{t("productNotFound")}</h2>
         <Button as={Link} to="/admin/products" className="mt-6">
           {t("manageProducts")}

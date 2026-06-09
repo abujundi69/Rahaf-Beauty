@@ -18,19 +18,19 @@ export default function ProductMediaViewer({
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl bg-white p-2 shadow-soft",
+        "relative overflow-hidden rounded-[1.5rem] border border-petal/70 bg-white/95 p-2 shadow-soft",
         className,
       )}
     >
       {active?.kind === "video" ? (
-        <div className="relative aspect-square overflow-hidden rounded-2xl bg-ink md:aspect-[5/4]">
+        <div className="relative aspect-square overflow-hidden rounded-[1.2rem] bg-charcoal md:aspect-[5/4]">
           <video
             src={active.src}
             controls
             className="h-full w-full object-cover"
             poster=""
           />
-          <div className="pointer-events-none absolute start-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/88 px-3 py-1.5 text-xs font-bold text-ink">
+          <div className="pointer-events-none absolute start-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-ink">
             <Play className="h-3.5 w-3.5 text-terracotta" aria-hidden="true" />
             {t("video")}
           </div>
@@ -39,7 +39,7 @@ export default function ProductMediaViewer({
         <img
           src={active.src}
           alt=""
-          className="aspect-square w-full rounded-2xl object-cover md:aspect-[5/4]"
+          className="aspect-square w-full rounded-[1.2rem] object-cover md:aspect-[5/4]"
         />
       ) : (
         <ProductVisual
@@ -53,7 +53,7 @@ export default function ProductMediaViewer({
           <button
             type="button"
             onClick={onPrevious}
-            className="absolute start-4 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/86 text-ink shadow-sm transition hover:bg-white"
+            className="absolute start-4 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-ink shadow-sm transition hover:bg-white"
             aria-label="الوسيط السابق"
           >
             <ChevronLeft className="h-5 w-5 rtl:rotate-180" aria-hidden="true" />
@@ -61,7 +61,7 @@ export default function ProductMediaViewer({
           <button
             type="button"
             onClick={onNext}
-            className="absolute end-4 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/86 text-ink shadow-sm transition hover:bg-white"
+            className="absolute end-4 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-ink shadow-sm transition hover:bg-white"
             aria-label="الوسيط التالي"
           >
             <ChevronRight className="h-5 w-5 rtl:rotate-180" aria-hidden="true" />

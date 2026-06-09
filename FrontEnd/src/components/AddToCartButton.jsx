@@ -13,10 +13,11 @@ const sizes = {
 };
 
 const variants = {
-  primary: "bg-clay text-white shadow-card hover:bg-terracotta",
-  dark: "bg-charcoal text-white hover:bg-ink",
+  primary:
+    "bg-gradient-to-r from-clay to-terracotta text-white shadow-[0_14px_30px_rgba(219,39,119,0.22)] hover:shadow-[0_18px_34px_rgba(219,39,119,0.28)]",
+  dark: "bg-gradient-to-r from-charcoal to-terracotta text-white shadow-card hover:from-terracotta hover:to-clay",
   outline:
-    "border border-clay/30 bg-white text-ink hover:border-clay hover:bg-ivory",
+    "border border-clay/25 bg-white text-ink shadow-sm hover:border-clay hover:bg-shell/70 hover:text-terracotta",
 };
 
 export default function AddToCartButton({
@@ -91,7 +92,7 @@ export default function AddToCartButton({
       aria-live="polite"
       disabled={disabled || added || busy}
       className={cn(
-        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-2xl font-extrabold transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta disabled:cursor-not-allowed disabled:opacity-55",
+        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full font-extrabold transition-all duration-300 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:translate-y-0",
         size === "xs" ? "gap-1.5" : "gap-2",
         sizes[size],
         variants[variant],
@@ -104,7 +105,7 @@ export default function AddToCartButton({
       <span
         className={cn(
           "absolute inset-0 origin-center opacity-0 transition-opacity duration-300",
-          added && "animate-[addCartPulse_1.1s_ease-out] bg-white/16 opacity-100",
+          added && "animate-[addCartPulse_1.1s_ease-out] bg-white/20 opacity-100",
         )}
         aria-hidden="true"
       />

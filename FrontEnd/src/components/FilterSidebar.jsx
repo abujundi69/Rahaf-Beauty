@@ -16,7 +16,7 @@ function toggleArrayValue(values, value) {
 
 function CheckboxGroup({ title, options, value, onChange }) {
   return (
-    <fieldset className="border-b border-petal pb-6">
+    <fieldset className="border-b border-petal/70 pb-6">
       <legend className="mb-4 text-sm font-extrabold text-ink">{title}</legend>
       <div className="space-y-3">
         {options.map((option) => {
@@ -25,13 +25,13 @@ function CheckboxGroup({ title, options, value, onChange }) {
           return (
             <label
               key={optionValue}
-              className="flex items-center gap-3 text-sm font-medium text-muted"
+              className="flex items-center gap-3 rounded-2xl px-2 py-1.5 text-sm font-semibold text-muted transition hover:bg-shell/60 hover:text-ink"
             >
               <input
                 type="checkbox"
                 checked={value.includes(optionValue)}
                 onChange={() => onChange(toggleArrayValue(value, optionValue))}
-                className="h-4 w-4 rounded border-shell text-terracotta focus:ring-terracotta"
+                className="h-4 w-4 rounded border-petal text-terracotta focus:ring-terracotta"
               />
               <span>{label}</span>
             </label>
@@ -67,10 +67,10 @@ export default function FilterSidebar({
     }));
 
   return (
-    <aside className="rounded-2xl bg-white p-5 shadow-sm">
+    <aside className="beauty-shell p-5">
       <div className="mb-6 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-petal text-terracotta">
+          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-shell text-terracotta ring-1 ring-petal/70">
             <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
           </span>
           <h2 className="text-lg font-extrabold text-ink">{t("filters")}</h2>
@@ -79,7 +79,7 @@ export default function FilterSidebar({
           <button
             type="button"
             onClick={onClose}
-            className="grid h-9 w-9 place-items-center rounded-full bg-petal text-muted"
+            className="grid h-9 w-9 place-items-center rounded-full bg-shell text-muted transition hover:bg-petal/70 hover:text-terracotta"
             aria-label={t("filters")}
           >
             <X className="h-4 w-4" aria-hidden="true" />
@@ -104,7 +104,7 @@ export default function FilterSidebar({
           onChange={(value) => update("brands", value)}
         />
 
-        <fieldset className="border-b border-petal pb-6">
+        <fieldset className="border-b border-petal/70 pb-6">
           <legend className="mb-4 text-sm font-extrabold text-ink">
             {t("priceRange")}
           </legend>
@@ -116,7 +116,7 @@ export default function FilterSidebar({
                 min="0"
                 value={filters.minPrice}
                 onChange={(event) => update("minPrice", event.target.value)}
-                className="mt-2 h-10 w-full rounded-2xl bg-ivory px-3 text-sm text-ink outline-none focus:ring-4 focus:ring-shell/25"
+                className="mt-2 h-10 w-full rounded-full bg-ivory px-3 text-sm text-ink outline-none focus:ring-4 focus:ring-shell/70"
               />
             </label>
             <label className="text-xs font-semibold uppercase tracking-wide text-muted">
@@ -126,26 +126,26 @@ export default function FilterSidebar({
                 min="0"
                 value={filters.maxPrice}
                 onChange={(event) => update("maxPrice", event.target.value)}
-                className="mt-2 h-10 w-full rounded-2xl bg-ivory px-3 text-sm text-ink outline-none focus:ring-4 focus:ring-shell/25"
+                className="mt-2 h-10 w-full rounded-full bg-ivory px-3 text-sm text-ink outline-none focus:ring-4 focus:ring-shell/70"
               />
             </label>
           </div>
         </fieldset>
 
-        <fieldset className="border-b border-petal pb-6">
+        <fieldset className="border-b border-petal/70 pb-6">
           <legend className="mb-4 text-sm font-extrabold text-ink">{t("rating")}</legend>
           <div className="space-y-3">
             {[4.8, 4.5, 4.0].map((rating) => (
               <label
                 key={rating}
-                className="flex items-center gap-3 text-sm font-medium text-muted"
+                className="flex items-center gap-3 rounded-2xl px-2 py-1.5 text-sm font-semibold text-muted transition hover:bg-shell/60 hover:text-ink"
               >
                 <input
                   type="radio"
                   name="rating"
                   checked={filters.rating === String(rating)}
                   onChange={() => update("rating", String(rating))}
-                  className="h-4 w-4 border-shell text-terracotta focus:ring-terracotta"
+                  className="h-4 w-4 border-petal text-terracotta focus:ring-terracotta"
                 />
                 {rating}+
               </label>

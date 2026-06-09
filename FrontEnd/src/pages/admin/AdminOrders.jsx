@@ -43,7 +43,7 @@ function StatusBadge({ status, t }) {
 
 function DetailSection({ title, children, className = "" }) {
   return (
-    <section className={cn("rounded-2xl border border-petal/70 bg-ivory/70 p-4", className)}>
+    <section className={cn("rounded-[1.15rem] border border-petal/70 bg-ivory/75 p-4", className)}>
       <h4 className="text-sm font-extrabold text-ink">{title}</h4>
       <div className="mt-3">{children}</div>
     </section>
@@ -164,7 +164,7 @@ export default function AdminOrders() {
   };
 
   return (
-    <section className="min-w-0 rounded-2xl border border-petal/70 bg-white p-5 shadow-sm">
+    <section className="beauty-shell min-w-0 p-5">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
@@ -174,7 +174,7 @@ export default function AdminOrders() {
         </div>
       </div>
 
-      <div className="max-w-full overflow-x-auto">
+      <div className="beauty-table-wrap max-w-full overflow-x-auto p-2">
         <table className="w-full min-w-[760px] border-separate border-spacing-y-2 text-sm">
           <thead className="text-xs uppercase tracking-[0.12em] text-muted">
             <tr>
@@ -190,21 +190,21 @@ export default function AdminOrders() {
           <tbody>
             {ordersLoading ? (
               <tr>
-                <td colSpan={7} className="rounded-2xl bg-ivory p-8 text-center text-sm font-bold text-muted">
+                <td colSpan={7} className="rounded-2xl bg-shell p-8 text-center text-sm font-bold text-muted">
                   {t("loading")}
                 </td>
               </tr>
             ) : null}
             {!ordersLoading && visibleOrders.length === 0 ? (
               <tr>
-                <td colSpan={7} className="rounded-2xl bg-ivory p-8 text-center text-sm font-bold text-muted">
+                <td colSpan={7} className="rounded-2xl bg-shell p-8 text-center text-sm font-bold text-muted">
                   {t("emptyOrders")}
                 </td>
               </tr>
             ) : null}
             {!ordersLoading
               ? visibleOrders.map((order) => (
-                  <tr key={order.id} className="bg-ivory/80 transition hover:bg-shell/70">
+                  <tr key={order.id} className="bg-white/95 transition hover:bg-shell/50">
                     <td className="rounded-s-2xl px-4 py-3 font-extrabold text-ink">
                       {getShortOrderCode(order)}
                     </td>
@@ -219,7 +219,7 @@ export default function AdminOrders() {
                       <button
                         type="button"
                         onClick={() => openOrder(order.id)}
-                        className="inline-flex h-9 items-center gap-2 rounded-full bg-white px-3 text-xs font-extrabold text-ink shadow-sm transition hover:bg-petal"
+                        className="inline-flex h-9 items-center gap-2 rounded-full bg-shell px-3 text-xs font-extrabold text-terracotta shadow-sm transition hover:bg-petal/80"
                       >
                         <Eye className="h-4 w-4" aria-hidden="true" />
                         {t("viewDetails")}
@@ -233,7 +233,7 @@ export default function AdminOrders() {
       </div>
 
       {selectedOrderId ? (
-        <div className="fixed inset-0 z-[150] grid place-items-center bg-ink/45 p-3 backdrop-blur-sm sm:p-5">
+        <div className="fixed inset-0 z-[150] grid place-items-center bg-ink/50 p-3 backdrop-blur-sm sm:p-5">
           <button
             type="button"
             className="absolute inset-0 cursor-default"
@@ -245,9 +245,9 @@ export default function AdminOrders() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="admin-order-dialog-title"
-            className="relative flex max-h-[calc(100vh-2rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-petal bg-white shadow-soft"
+            className="relative flex max-h-[calc(100vh-2rem)] w-full max-w-5xl flex-col overflow-hidden rounded-[1.5rem] border border-petal bg-white shadow-soft"
           >
-            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-petal/70 bg-white px-5 py-4">
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-petal/70 bg-gradient-to-r from-white via-ivory to-shell px-5 py-4">
               <div className="min-w-0">
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
                   {t("orderDetails")}
@@ -262,7 +262,7 @@ export default function AdminOrders() {
               <button
                 type="button"
                 onClick={closeOrder}
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ivory text-ink transition hover:bg-petal"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-terracotta shadow-sm ring-1 ring-petal/70 transition hover:bg-shell"
                 aria-label={t("close")}
               >
                 <X className="h-5 w-5" aria-hidden="true" />
@@ -271,7 +271,7 @@ export default function AdminOrders() {
 
             <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
               {detailsLoading ? (
-                <div className="grid min-h-64 place-items-center rounded-2xl bg-ivory text-sm font-bold text-muted">
+                <div className="grid min-h-64 place-items-center rounded-2xl bg-shell text-sm font-bold text-muted">
                   <span className="inline-flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                     {t("loading")}
@@ -387,7 +387,7 @@ export default function AdminOrders() {
                     </DetailSection>
                   ) : null}
 
-                  <div className="grid gap-2 rounded-2xl bg-charcoal p-4 text-sm text-white">
+                  <div className="grid gap-2 rounded-2xl bg-gradient-to-r from-charcoal to-terracotta p-4 text-sm text-white shadow-card">
                     <div className="flex justify-between gap-4">
                       <span>{t("subtotal")}</span>
                       <span>{formatPrice(selectedOrder.subtotal ?? selectedOrder.total, language)}</span>

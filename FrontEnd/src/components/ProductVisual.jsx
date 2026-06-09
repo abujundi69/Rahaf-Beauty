@@ -14,10 +14,17 @@ export default function ProductVisual({ product, className = "" }) {
   if (primaryImage && isFileMediaSource(primaryImage)) {
     return (
       <div
-        className={cn("relative isolate overflow-hidden rounded-2xl bg-white", className)}
+        className={cn(
+          "relative isolate overflow-hidden rounded-2xl bg-gradient-to-br from-white via-ivory to-shell",
+          className,
+        )}
         aria-hidden="true"
       >
-        <img src={primaryImage} alt="" className="h-full w-full object-cover" />
+        <img
+          src={primaryImage}
+          alt=""
+          className="h-full w-full object-cover transition duration-500"
+        />
       </div>
     );
   }
@@ -25,7 +32,7 @@ export default function ProductVisual({ product, className = "" }) {
   return (
     <div
       className={cn(
-        "grid place-items-center rounded-2xl border border-petal bg-ivory text-center text-muted",
+        "grid place-items-center rounded-2xl border border-petal bg-gradient-to-br from-white via-ivory to-shell text-center text-muted",
         className,
       )}
     >

@@ -106,7 +106,7 @@ export default function ProductReviews({ product, onReviewCreated }) {
       </div>
 
       {!isAdmin ? (
-        <form onSubmit={submit} className="rounded-2xl bg-ivory p-4">
+        <form onSubmit={submit} className="rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4">
           <p className="text-sm font-extrabold text-ink">{t("writeReview")}</p>
           {isAuthenticated && isCustomer ? (
             <>
@@ -122,7 +122,7 @@ export default function ProductReviews({ product, onReviewCreated }) {
                     className={cn(
                       "grid h-10 w-10 place-items-center rounded-full border transition",
                       value <= rating
-                        ? "border-terracotta bg-shell text-terracotta"
+                        ? "border-terracotta bg-shell text-terracotta shadow-sm"
                         : "border-petal bg-white text-muted hover:border-terracotta",
                     )}
                     aria-label={`${value} من 5`}
@@ -140,7 +140,7 @@ export default function ProductReviews({ product, onReviewCreated }) {
                 <textarea
                   value={comment}
                   onChange={(event) => setComment(event.target.value)}
-                  className="mt-2 min-h-28 w-full rounded-2xl bg-white px-4 py-3 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+                  className="mt-2 min-h-28 w-full rounded-[1.1rem] bg-white px-4 py-3 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
                 />
               </label>
               {formError ? (
@@ -151,7 +151,7 @@ export default function ProductReviews({ product, onReviewCreated }) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-charcoal px-5 text-sm font-extrabold text-white transition hover:bg-ink disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-gradient-to-r from-clay to-terracotta px-5 text-sm font-extrabold text-white shadow-card transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {submitting ? t("loading") : t("submitReview")}
               </button>
@@ -160,7 +160,7 @@ export default function ProductReviews({ product, onReviewCreated }) {
             <button
               type="button"
               onClick={openAuthRequiredModal}
-              className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-charcoal px-5 text-sm font-extrabold text-white transition hover:bg-ink"
+              className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-gradient-to-r from-clay to-terracotta px-5 text-sm font-extrabold text-white shadow-card transition hover:-translate-y-0.5"
             >
               {t("loginToReview")}
             </button>
@@ -169,7 +169,7 @@ export default function ProductReviews({ product, onReviewCreated }) {
       ) : null}
 
       {loading ? (
-        <div className="rounded-2xl bg-ivory p-6 text-center text-sm font-bold text-muted">
+        <div className="rounded-2xl bg-shell p-6 text-center text-sm font-bold text-muted">
           {t("loading")}
         </div>
       ) : null}
@@ -181,14 +181,14 @@ export default function ProductReviews({ product, onReviewCreated }) {
       ) : null}
 
       {!loading && !error && reviews.length === 0 ? (
-        <div className="rounded-2xl bg-ivory p-6 text-center text-sm font-bold text-muted">
+        <div className="rounded-2xl bg-shell p-6 text-center text-sm font-bold text-muted">
           {t("noReviewsYet")}
         </div>
       ) : null}
 
       <div className="grid gap-3">
         {reviews.map((review) => (
-          <article key={review.id} className="rounded-2xl border border-petal bg-white p-4">
+          <article key={review.id} className="rounded-2xl border border-petal bg-white/95 p-4 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-sm font-extrabold text-ink">{review.customerName}</p>

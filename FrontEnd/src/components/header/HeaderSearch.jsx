@@ -154,7 +154,7 @@ export default function HeaderSearch({
       ref={searchRef}
       onSubmit={submit}
       className={cn(
-        "relative rounded-2xl border border-petal/80 bg-white p-1.5 shadow-sm transition focus-within:border-terracotta/45 focus-within:ring-4 focus-within:ring-shell/30 sm:rounded-full",
+        "relative rounded-[1.35rem] border border-petal/70 bg-white/90 p-1.5 shadow-[0_14px_34px_rgba(190,24,93,0.1)] transition focus-within:border-clay/50 focus-within:ring-4 focus-within:ring-shell/70 sm:rounded-full",
         className,
       )}
       role="search"
@@ -166,9 +166,9 @@ export default function HeaderSearch({
           onChange={updateCategory}
           language={language}
           t={t}
-          className="h-11 rounded-xl border border-petal/80 bg-ivory/70 sm:h-12 sm:w-52 sm:rounded-e-none sm:rounded-s-full sm:border-0 sm:border-e sm:bg-ivory/55"
+          className="h-11 rounded-2xl border border-petal/80 bg-shell/70 sm:h-12 sm:w-52 sm:rounded-e-none sm:rounded-s-full sm:border-0 sm:border-e sm:bg-shell/60"
         />
-        <div className="flex min-w-0 flex-1 items-center rounded-xl bg-white sm:h-12 sm:rounded-none">
+        <div className="flex min-w-0 flex-1 items-center rounded-2xl bg-white sm:h-12 sm:rounded-none">
           <input
             value={query}
             onChange={(event) => updateQuery(event.target.value)}
@@ -178,7 +178,7 @@ export default function HeaderSearch({
           />
           <button
             type="submit"
-            className="me-1 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-charcoal text-white transition hover:bg-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+            className="me-1 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-r from-clay to-terracotta text-white shadow-[0_10px_24px_rgba(219,39,119,0.24)] transition hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
             aria-label={t("search")}
           >
             <Search className="h-4 w-4" aria-hidden="true" />
@@ -187,7 +187,7 @@ export default function HeaderSearch({
       </div>
 
       {shouldShowDropdown ? (
-        <div className="absolute inset-x-0 top-[calc(100%+0.5rem)] z-50 max-h-[min(70vh,28rem)] overflow-y-auto rounded-2xl border border-petal/80 bg-white p-2 text-start shadow-soft">
+        <div className="absolute inset-x-0 top-[calc(100%+0.5rem)] z-50 max-h-[min(70vh,28rem)] overflow-y-auto rounded-[1.35rem] border border-petal/80 bg-white/95 p-2 text-start shadow-soft backdrop-blur">
           {dropdownProducts.length > 0 ? (
             <div className="space-y-1">
               {dropdownProducts.map((product) => {
@@ -197,7 +197,7 @@ export default function HeaderSearch({
                     key={product.id}
                     type="button"
                     onClick={() => openProduct(product)}
-                    className="flex w-full min-w-0 items-center gap-3 rounded-xl p-2 text-start transition hover:bg-ivory focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
+                    className="flex w-full min-w-0 items-center gap-3 rounded-2xl p-2 text-start transition hover:bg-shell/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"
                   >
                     <ProductVisual
                       product={product}
@@ -216,7 +216,7 @@ export default function HeaderSearch({
               })}
             </div>
           ) : (
-            <div className="rounded-xl bg-ivory px-4 py-5 text-center text-sm font-bold text-muted">
+            <div className="rounded-2xl bg-shell px-4 py-5 text-center text-sm font-bold text-muted">
               {t("noMatchingResults")}
             </div>
           )}

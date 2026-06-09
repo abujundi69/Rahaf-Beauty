@@ -37,7 +37,7 @@ function Field({
         required={required}
         inputMode={inputMode}
         maxLength={maxLength}
-        className="mt-2 w-full rounded-2xl bg-ivory px-4 py-3 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+        className="mt-2 w-full rounded-[1.1rem] bg-ivory px-4 py-3 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
       />
     </label>
   );
@@ -121,9 +121,9 @@ export default function Checkout() {
       </div>
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-4">
-          <section className="rounded-2xl bg-white p-5 shadow-sm">
+          <section className="beauty-shell p-5">
             <div className="flex items-center gap-3">
-              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-shell text-ink">
+              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-shell text-terracotta ring-1 ring-petal/70">
                 <Banknote className="h-5 w-5" aria-hidden="true" />
               </span>
               <div>
@@ -137,7 +137,7 @@ export default function Checkout() {
             </div>
           </section>
 
-          <section className="rounded-2xl bg-white p-5 shadow-sm">
+          <section className="beauty-shell p-5">
             <h2 className="font-display text-2xl font-bold text-ink">{t("customerDetails")}</h2>
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <div>
@@ -176,11 +176,11 @@ export default function Checkout() {
             </div>
           </section>
 
-          <section className="rounded-2xl bg-white p-5 shadow-sm">
+          <section className="beauty-shell p-5">
             <h2 className="font-display text-2xl font-bold text-ink">{t("products")}</h2>
             <div className="mt-4 space-y-3">
               {cartDetailed.map((item) => (
-                <div key={item.id} className="rounded-2xl bg-ivory p-4 text-sm">
+                <div key={item.id} className="rounded-2xl border border-petal/50 bg-ivory/80 p-4 text-sm">
                   <div className="flex justify-between gap-3">
                     <span className="font-bold text-ink">
                       {getProductName(item.product, language)}

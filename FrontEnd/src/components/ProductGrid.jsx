@@ -9,7 +9,7 @@ export default function ProductGrid({ products, emptyTitle = "", emptyDescriptio
       emptyDescription === null ? "" : emptyDescription || t("emptyProducts");
 
     return (
-      <div className="rounded-2xl border border-petal/70 bg-white p-10 text-center shadow-sm">
+      <div className="beauty-shell p-10 text-center">
         <h3 className="text-2xl font-extrabold text-ink">
           {emptyTitle || t("noProducts")}
         </h3>

@@ -20,7 +20,7 @@ export default function AdminCategoriesTable() {
   };
 
   return (
-    <section className="min-w-0 rounded-2xl bg-white p-5 shadow-sm">
+    <section className="beauty-shell min-w-0 p-5">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
@@ -44,12 +44,12 @@ export default function AdminCategoriesTable() {
 
       <div className="grid gap-3">
         {loading ? (
-          <div className="rounded-2xl bg-ivory p-8 text-center text-sm font-bold text-muted">
+          <div className="rounded-2xl bg-shell p-8 text-center text-sm font-bold text-muted">
             {t("loading")}
           </div>
         ) : null}
         {!loading && categories.length === 0 ? (
-          <div className="rounded-2xl bg-ivory p-8 text-center text-sm font-bold text-muted">
+          <div className="rounded-2xl bg-shell p-8 text-center text-sm font-bold text-muted">
             {t("noData")}
           </div>
         ) : null}
@@ -64,12 +64,12 @@ export default function AdminCategoriesTable() {
           return (
             <article
               key={category.id}
-              className="grid gap-4 rounded-2xl bg-ivory p-4 md:grid-cols-[auto_1fr_auto] md:items-center"
+              className="grid gap-4 rounded-[1.2rem] border border-petal/60 bg-white/90 p-4 shadow-sm transition hover:border-clay/40 hover:bg-shell/40 md:grid-cols-[auto_1fr_auto] md:items-center"
             >
               <CategoryImage
                 src={category.imageUrl}
                 name={name}
-                className="h-20 w-20 rounded-2xl border border-petal bg-white"
+                className="h-20 w-20 rounded-2xl border border-petal bg-gradient-to-br from-white via-ivory to-shell"
                 imageClassName="p-1.5"
               />
               <div>
@@ -91,7 +91,7 @@ export default function AdminCategoriesTable() {
               <div className="flex items-center gap-2">
                 <Link
                   to={`/admin/categories/${category.id}/edit`}
-                  className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink shadow-sm hover:bg-petal"
+                  className="grid h-9 w-9 place-items-center rounded-full bg-shell text-terracotta shadow-sm hover:bg-petal/80"
                   aria-label={t("editCategory")}
                 >
                   <Edit3 className="h-4 w-4" aria-hidden="true" />
@@ -108,7 +108,7 @@ export default function AdminCategoriesTable() {
                     <button
                       type="button"
                       onClick={() => setPendingDeleteId("")}
-                      className="rounded-full bg-white px-3 py-2 text-xs font-bold text-muted shadow-sm hover:bg-petal hover:text-ink"
+                      className="rounded-full bg-white px-3 py-2 text-xs font-bold text-muted shadow-sm hover:bg-shell hover:text-ink"
                     >
                       {t("cancel")}
                     </button>
@@ -117,7 +117,7 @@ export default function AdminCategoriesTable() {
                   <button
                     type="button"
                     onClick={() => setPendingDeleteId(category.id)}
-                    className="grid h-9 w-9 place-items-center rounded-full bg-white text-muted shadow-sm hover:bg-sale hover:text-white"
+                    className="grid h-9 w-9 place-items-center rounded-full bg-white text-muted shadow-sm transition hover:bg-sale hover:text-white"
                     aria-label={t("deleteCategory")}
                   >
                     <Trash2 className="h-4 w-4" aria-hidden="true" />

@@ -10,7 +10,8 @@ export default function CategoryScroller() {
 
   return (
     <section className="container-page py-12">
-      <div className="flex gap-4 overflow-x-auto pb-3">
+      <div className="beauty-shell px-4 py-5">
+        <div className="flex gap-4 overflow-x-auto pb-1">
         {categories.map((category) => {
           const name = getCategoryName(category, language);
           return (
@@ -22,7 +23,7 @@ export default function CategoryScroller() {
               <CategoryImage
                 src={category.imageUrl}
                 name={name}
-                className="mx-auto h-20 w-20 rounded-full border border-petal shadow-sm transition group-hover:-translate-y-1 group-hover:shadow-card"
+                className="mx-auto h-20 w-20 rounded-full border border-petal bg-shell shadow-sm transition duration-300 group-hover:-translate-y-1 group-hover:border-clay/50 group-hover:shadow-card"
                 imageClassName="p-1.5"
               />
               <span className="mt-3 block text-sm font-extrabold text-ink">
@@ -34,6 +35,7 @@ export default function CategoryScroller() {
             </Link>
           );
         })}
+        </div>
       </div>
     </section>
   );

@@ -36,7 +36,7 @@ export default function AccountDashboard() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-white p-6 shadow-sm">
+      <section className="beauty-shell p-6">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
           {t("accountOverview")}
         </p>
@@ -49,28 +49,28 @@ export default function AccountDashboard() {
       </section>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <article className="rounded-2xl bg-white p-5 shadow-sm">
+        <article className="rounded-[1.25rem] border border-petal/70 bg-white/95 p-5 shadow-card">
           <p className="text-sm font-bold text-muted">{t("wishlist")}</p>
           <p className="mt-2 text-3xl font-extrabold text-ink">{formatNumber(wishlistCount)}</p>
         </article>
-        <article className="rounded-2xl bg-white p-5 shadow-sm">
+        <article className="rounded-[1.25rem] border border-petal/70 bg-white/95 p-5 shadow-card">
           <p className="text-sm font-bold text-muted">{t("cart")}</p>
           <p className="mt-2 text-3xl font-extrabold text-ink">{formatNumber(cartCount)}</p>
         </article>
-        <article className="rounded-2xl bg-white p-5 shadow-sm">
+        <article className="rounded-[1.25rem] border border-petal/70 bg-white/95 p-5 shadow-card">
           <p className="text-sm font-bold text-muted">{t("profile")}</p>
           <p className="mt-2 text-base font-extrabold text-ink">{accountSettings.phone}</p>
         </article>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
-        <section className="rounded-2xl bg-white p-5 shadow-sm">
+        <section className="beauty-shell p-5">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
             {t("recentOrders")}
           </p>
           <div className="mt-4 space-y-3">
             {orders.slice(0, 2).map((order) => (
-              <Link key={order.id} to={`/account/orders/${order.id}`} className="block rounded-2xl bg-ivory p-4">
+              <Link key={order.id} to={`/account/orders/${order.id}`} className="block rounded-2xl border border-petal/50 bg-ivory/80 p-4 transition hover:bg-shell/70">
                 <div className="flex items-center justify-between gap-3">
                   <span className="font-extrabold text-ink">{order.id}</span>
                   <span className={`rounded-full px-3 py-1 text-xs font-bold ${orderStatusTone[order.status]}`}>
@@ -89,12 +89,12 @@ export default function AccountDashboard() {
           </div>
         </section>
 
-        <section className="rounded-2xl bg-white p-5 shadow-sm">
+        <section className="beauty-shell p-5">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
             {t("defaultAddress")}
           </p>
           {defaultAddress ? (
-            <div className="mt-4 rounded-2xl bg-ivory p-4 text-sm text-muted">
+            <div className="mt-4 rounded-2xl border border-petal/50 bg-ivory/80 p-4 text-sm text-muted">
               <p className="font-extrabold text-ink">{defaultAddress.city}, {defaultAddress.area}</p>
               <p className="mt-2">{defaultAddress.street}, {defaultAddress.building}</p>
               <p className="mt-2">{defaultAddress.notes}</p>

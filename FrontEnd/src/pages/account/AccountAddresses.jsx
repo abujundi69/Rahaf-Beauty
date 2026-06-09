@@ -22,7 +22,7 @@ function Field({ label, value, onChange }) {
       <input
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 h-11 w-full rounded-2xl bg-ivory px-4 text-sm text-ink outline-none focus:ring-4 focus:ring-shell/25"
+        className="mt-2 h-11 w-full rounded-full bg-ivory px-4 text-sm text-ink outline-none focus:ring-4 focus:ring-shell/70"
       />
     </label>
   );
@@ -97,7 +97,7 @@ export default function AccountAddresses() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-white p-5 shadow-sm md:p-6">
+      <section className="beauty-shell p-5 md:p-6">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
           {editingId ? t("editAddress") : t("addAddress")}
         </p>
@@ -108,7 +108,7 @@ export default function AccountAddresses() {
           <Field label={t("street")} value={form.street} onChange={(value) => update("street", value)} />
           <Field label={t("building")} value={form.building} onChange={(value) => update("building", value)} />
           <Field label={t("notes")} value={form.notes} onChange={(value) => update("notes", value)} />
-          <label className="flex items-center gap-3 rounded-2xl bg-ivory px-4 py-3 text-sm font-bold text-ink">
+          <label className="flex items-center gap-3 rounded-[1.1rem] border border-petal/60 bg-ivory px-4 py-3 text-sm font-bold text-ink">
             <input
               type="checkbox"
               checked={form.isDefault}
@@ -133,12 +133,12 @@ export default function AccountAddresses() {
 
       <section className="grid gap-4">
         {loading ? (
-          <div className="rounded-2xl bg-white p-8 text-center shadow-sm">
+          <div className="beauty-shell p-8 text-center">
             <h2 className="font-display text-3xl font-bold text-ink">{t("loading")}</h2>
           </div>
         ) : null}
         {!loading && addresses.length === 0 ? (
-          <div className="rounded-2xl bg-white p-8 text-center shadow-sm">
+          <div className="beauty-shell p-8 text-center">
             <h2 className="font-display text-3xl font-bold text-ink">{t("addresses")}</h2>
             <p className="mt-2 text-sm text-muted">
               لا توجد بيانات
@@ -146,7 +146,7 @@ export default function AccountAddresses() {
           </div>
         ) : (
           addresses.map((address) => (
-            <article key={address.id} className="rounded-2xl bg-white p-5 shadow-sm">
+            <article key={address.id} className="rounded-[1.2rem] border border-petal/70 bg-white/95 p-5 shadow-sm transition hover:border-clay/40 hover:bg-shell/40">
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2">
@@ -157,10 +157,10 @@ export default function AccountAddresses() {
                   <p className="mt-1 text-sm text-muted">{address.notes}</p>
                 </div>
                 <div className="flex gap-2">
-                  <button className="grid h-9 w-9 place-items-center rounded-full bg-ivory text-ink" onClick={() => edit(address)} aria-label={t("edit")}>
+                  <button className="grid h-9 w-9 place-items-center rounded-full bg-shell text-terracotta shadow-sm" onClick={() => edit(address)} aria-label={t("edit")}>
                     <Edit3 className="h-4 w-4" aria-hidden="true" />
                   </button>
-                  <button className="grid h-9 w-9 place-items-center rounded-full bg-ivory text-muted" onClick={() => remove(address.id)} aria-label={t("delete")}>
+                  <button className="grid h-9 w-9 place-items-center rounded-full bg-ivory text-muted shadow-sm hover:bg-sale hover:text-white" onClick={() => remove(address.id)} aria-label={t("delete")}>
                     <Trash2 className="h-4 w-4" aria-hidden="true" />
                   </button>
                   {!address.isDefault ? (

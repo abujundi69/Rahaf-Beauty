@@ -36,7 +36,7 @@ export default function Shop() {
         description="تصفحي العناية والمكياج والجسم والعطور وطقوس الجمال اليومية."
       />
 
-      <div className="mb-6 flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm md:flex-row md:items-center md:justify-between">
+      <div className="mb-6 flex flex-col gap-3 rounded-[1.35rem] border border-petal/70 bg-white/90 p-4 shadow-card md:flex-row md:items-center md:justify-between">
         <div className="flex flex-1 items-center gap-3">
           <MobileFilters filters={filters} setFilters={setFilters} />
           <SearchBar
@@ -48,7 +48,7 @@ export default function Shop() {
           />
         </div>
         <div className="flex items-center justify-between gap-3">
-          <span className="inline-flex items-center gap-2 text-sm font-bold text-muted">
+          <span className="inline-flex items-center gap-2 rounded-full bg-shell px-4 py-2 text-sm font-extrabold text-terracotta ring-1 ring-petal/60">
             <SlidersHorizontal className="h-4 w-4 text-terracotta" aria-hidden="true" />
             {formatNumber(visibleProducts.length)} {t("items")}
           </span>

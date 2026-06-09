@@ -64,7 +64,7 @@ function discountsToSettings(discounts) {
 
 function SectionCard({ title, description, children }) {
   return (
-    <section className="rounded-2xl bg-white p-5 shadow-sm md:p-6">
+    <section className="beauty-shell p-5 md:p-6">
       <div className="mb-5">
         <h3 className="font-display text-2xl font-bold text-ink">{title}</h3>
         {description ? (
@@ -95,7 +95,7 @@ function Field({
         placeholder={placeholder}
         disabled={disabled}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 w-full rounded-2xl bg-white px-4 py-3 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25 disabled:bg-ivory disabled:text-muted"
+        className="mt-2 w-full rounded-[1.1rem] bg-white px-4 py-3 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70 disabled:bg-ivory disabled:text-muted"
       />
     </label>
   );
@@ -103,7 +103,7 @@ function Field({
 
 function Toggle({ label, checked, onChange }) {
   return (
-    <label className="inline-flex items-center gap-3 rounded-2xl bg-ivory px-4 py-3 text-sm font-bold text-ink">
+    <label className="inline-flex items-center gap-3 rounded-full border border-petal/60 bg-ivory px-4 py-3 text-sm font-bold text-ink">
       <input
         type="checkbox"
         checked={checked}
@@ -359,7 +359,7 @@ export default function AdminSettings() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl bg-white p-5 shadow-sm md:p-6">
+      <div className="beauty-shell p-5 md:p-6">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
           {t("storeSettings")}
         </p>
@@ -380,7 +380,7 @@ export default function AdminSettings() {
 
       <SectionCard title="معلومات المتجر">
         <div className="grid gap-5 lg:grid-cols-[220px_1fr]">
-          <div className="rounded-2xl bg-ivory p-4">
+          <div className="rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4">
             <p className="text-sm font-bold text-ink">{t("storeLogo")}</p>
             <BrandLogo size="settings" className="mt-3 rounded-2xl bg-white p-1 shadow-sm" />
           </div>
@@ -391,7 +391,7 @@ export default function AdminSettings() {
               <select
                 value={settings.currency}
                 onChange={(event) => update("currency", event.target.value)}
-                className="mt-2 h-12 w-full rounded-2xl bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+                className="mt-2 h-12 w-full rounded-full bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
               >
                 <option value="SAR">ريال سعودي (SAR)</option>
               </select>
@@ -439,7 +439,7 @@ export default function AdminSettings() {
 
       <SectionCard title="إعدادات الخصومات" description={t("discountPriority")}>
         <div className="space-y-4">
-          <div className="rounded-2xl bg-ivory p-4">
+          <div className="rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm font-extrabold text-ink">{t("globalDiscount")}</p>
               <Toggle
@@ -456,7 +456,7 @@ export default function AdminSettings() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-ivory p-4">
+          <div className="rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm font-extrabold text-ink">{t("brandDiscounts")}</p>
               <Button type="button" size="sm" variant="outline" onClick={addBrandDiscount}>
@@ -466,13 +466,13 @@ export default function AdminSettings() {
             </div>
             <div className="mt-4 space-y-3">
               {settings.discounts.brands.map((discount) => (
-                <div key={discount.id} className="grid gap-3 rounded-2xl bg-white p-3 lg:grid-cols-[1fr_8rem_1fr_9rem_9rem_auto] lg:items-end">
+                <div key={discount.id} className="grid gap-3 rounded-2xl border border-petal/50 bg-white p-3 lg:grid-cols-[1fr_8rem_1fr_9rem_9rem_auto] lg:items-end">
                   <label className="block text-sm font-bold text-ink">
                     {t("brand")}
                     <select
                       value={discount.brand}
                       onChange={(event) => updateBrandDiscount(discount.id, "brand", event.target.value)}
-                      className="mt-2 h-12 w-full rounded-2xl bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+                      className="mt-2 h-12 w-full rounded-full bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
                     >
                       {brands.map((brand) => (
                         <option key={brand.id} value={brand.id}>{getBrandName(brand.name)}</option>
@@ -499,7 +499,7 @@ export default function AdminSettings() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-ivory p-4">
+          <div className="rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm font-extrabold text-ink">{t("productDiscounts")}</p>
               <Button type="button" size="sm" variant="outline" onClick={addProductDiscount}>
@@ -509,13 +509,13 @@ export default function AdminSettings() {
             </div>
             <div className="mt-4 space-y-3">
               {settings.discounts.products.map((discount) => (
-                <div key={discount.id} className="grid gap-3 rounded-2xl bg-white p-3 lg:grid-cols-[1.5fr_8rem_1fr_9rem_9rem_auto] lg:items-end">
+                <div key={discount.id} className="grid gap-3 rounded-2xl border border-petal/50 bg-white p-3 lg:grid-cols-[1.5fr_8rem_1fr_9rem_9rem_auto] lg:items-end">
                   <label className="block text-sm font-bold text-ink">
                     {t("products")}
                     <select
                       value={discount.productId}
                       onChange={(event) => updateProductDiscount(discount.id, "productId", event.target.value)}
-                      className="mt-2 h-12 w-full rounded-2xl bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+                      className="mt-2 h-12 w-full rounded-full bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
                     >
                       {products.map((product) => (
                         <option key={product.id} value={product.id}>

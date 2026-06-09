@@ -19,7 +19,7 @@ function Field({ label, value, onChange, type = "text" }) {
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 h-11 w-full rounded-2xl bg-ivory px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+        className="mt-2 h-11 w-full rounded-full bg-ivory px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
       />
     </label>
   );
@@ -74,7 +74,7 @@ export default function AccountSettings() {
 
   return (
     <div className="space-y-6">
-      <section className="min-w-0 rounded-2xl bg-white p-5 shadow-sm md:p-6">
+      <section className="beauty-shell min-w-0 p-5 md:p-6">
         <div className="mb-5 flex items-center justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
@@ -102,7 +102,7 @@ export default function AccountSettings() {
         </div>
       </section>
 
-      <section className="min-w-0 rounded-2xl bg-white p-5 shadow-sm md:p-6">
+      <section className="beauty-shell min-w-0 p-5 md:p-6">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
           {t("addressBook")}
         </p>
@@ -118,13 +118,13 @@ export default function AccountSettings() {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[0.8fr_1fr]">
-        <div className="min-w-0 rounded-2xl bg-white p-5 shadow-sm md:p-6">
+        <div className="beauty-shell min-w-0 p-5 md:p-6">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
             {t("orderHistory")}
           </p>
           <div className="mt-4 space-y-3">
             {orders.slice(0, 2).map((order) => (
-              <div key={order.id} className="rounded-2xl bg-ivory p-4">
+              <div key={order.id} className="rounded-2xl border border-petal/50 bg-ivory/80 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <span className="font-extrabold text-ink">{order.id}</span>
                   <span className={`rounded-full px-3 py-1 text-xs font-bold ${orderStatusTone[order.status]}`}>
@@ -143,7 +143,7 @@ export default function AccountSettings() {
           </div>
         </div>
 
-        <div className="min-w-0 rounded-2xl bg-white p-5 shadow-sm md:p-6">
+        <div className="beauty-shell min-w-0 p-5 md:p-6">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
             {t("wishlist")}
           </p>
@@ -161,7 +161,7 @@ export default function AccountSettings() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-sale/20 bg-white p-5 shadow-sm md:p-6">
+      <section className="rounded-[1.35rem] border border-sale/25 bg-white/95 p-5 shadow-card md:p-6">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-sale">
           {t("deleteAccount")}
         </p>
@@ -182,8 +182,8 @@ export default function AccountSettings() {
       </section>
 
       {deleteModalOpen ? (
-        <div className="fixed inset-0 z-[150] grid place-items-center bg-ink/40 p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-soft">
+        <div className="fixed inset-0 z-[150] grid place-items-center bg-ink/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-[1.5rem] border border-petal bg-white p-6 shadow-soft">
             <h3 className="font-display text-3xl font-bold text-ink">
               {t("deleteAccount")}
             </h3>

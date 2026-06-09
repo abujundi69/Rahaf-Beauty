@@ -52,13 +52,13 @@ export default function ProductGallery({ product }) {
             className={cn(
               "relative overflow-hidden rounded-2xl p-1 transition",
               index === itemIndex
-                ? "bg-terracotta shadow-card"
-                : "bg-white shadow-sm hover:bg-petal",
+                ? "bg-gradient-to-r from-clay to-terracotta shadow-card"
+                : "bg-white shadow-sm ring-1 ring-petal/60 hover:bg-shell",
             )}
             aria-label={item.label}
           >
             {item.kind === "video" ? (
-              <div className="grid aspect-square place-items-center rounded-xl bg-ink text-white">
+              <div className="grid aspect-square place-items-center rounded-xl bg-charcoal text-white">
                 <Play className="h-5 w-5" aria-hidden="true" />
               </div>
             ) : isFileMediaSource(item.src) ? (

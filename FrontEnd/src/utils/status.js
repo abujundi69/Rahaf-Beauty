@@ -1,14 +1,14 @@
 export const orderStatusTone = {
-  under_review: "bg-shell text-charcoal",
-  approved: "bg-petal/70 text-ink",
+  under_review: "bg-shell text-charcoal ring-1 ring-petal/60",
+  approved: "bg-petal/70 text-ink ring-1 ring-petal/70",
   rejected: "bg-sale/10 text-sale",
   preparing: "bg-terracotta/10 text-terracotta",
-  shipping: "bg-ink/10 text-ink",
-  out_for_delivery: "bg-olive/15 text-ink",
+  shipping: "bg-charcoal/10 text-charcoal",
+  out_for_delivery: "bg-olive/20 text-ink",
   delivered: "bg-olive/10 text-olive",
   received: "bg-olive/10 text-olive",
   cancelled: "bg-sale/10 text-sale",
-  Pending: "bg-shell text-charcoal",
+  Pending: "bg-shell text-charcoal ring-1 ring-petal/60",
   Processing: "bg-terracotta/10 text-terracotta",
   Delivered: "bg-olive/10 text-olive",
   Cancelled: "bg-sale/10 text-sale",
@@ -16,7 +16,7 @@ export const orderStatusTone = {
 
 export const productStatusTone = {
   Active: "bg-olive/10 text-olive",
-  Draft: "bg-shell/30 text-terracotta",
+  Draft: "bg-shell text-terracotta ring-1 ring-petal/60",
   "Out of Stock": "bg-sale/10 text-sale",
 };
 

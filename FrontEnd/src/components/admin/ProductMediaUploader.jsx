@@ -18,7 +18,7 @@ function UploadBox({ accept, children, id, multiple, onChange }) {
   return (
     <label
       htmlFor={id}
-      className="flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-petal bg-white px-5 py-6 text-center transition hover:border-terracotta hover:bg-shell/55"
+      className="flex min-h-36 cursor-pointer flex-col items-center justify-center rounded-[1.2rem] border border-dashed border-petal bg-white px-5 py-6 text-center transition hover:border-clay hover:bg-shell/50"
     >
       {children}
       <input
@@ -38,8 +38,8 @@ function ImagePreview({ image, onRemove }) {
   const source = getMediaSource(image);
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-petal bg-white p-2 shadow-sm">
-      <div className="relative aspect-square overflow-hidden rounded-xl bg-ivory">
+    <article className="overflow-hidden rounded-2xl border border-petal/70 bg-white p-2 shadow-sm">
+      <div className="relative aspect-square overflow-hidden rounded-xl bg-gradient-to-br from-white via-ivory to-shell">
         {isFileMediaSource(source) ? (
           <img src={source} alt="" className="h-full w-full object-cover" />
         ) : (
@@ -48,7 +48,7 @@ function ImagePreview({ image, onRemove }) {
         <button
           type="button"
           onClick={onRemove}
-          className="absolute end-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-white/92 text-ink shadow-sm transition hover:bg-shell"
+          className="absolute end-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-white/95 text-terracotta shadow-sm transition hover:bg-shell"
           aria-label={t("remove")}
         >
           <X className="h-4 w-4" aria-hidden="true" />
@@ -123,7 +123,7 @@ export default function ProductMediaUploader({
             multiple
             onChange={handleImages}
           >
-            <span className="grid h-12 w-12 place-items-center rounded-full bg-shell text-ink">
+            <span className="grid h-12 w-12 place-items-center rounded-full bg-shell text-terracotta ring-1 ring-petal/70">
               <ImagePlus className="h-5 w-5" aria-hidden="true" />
             </span>
             <span className="mt-3 text-sm font-extrabold text-ink">
@@ -145,7 +145,7 @@ export default function ProductMediaUploader({
             accept="video/*"
             onChange={handleVideo}
           >
-            <span className="grid h-12 w-12 place-items-center rounded-full bg-shell text-ink">
+            <span className="grid h-12 w-12 place-items-center rounded-full bg-shell text-terracotta ring-1 ring-petal/70">
               <Video className="h-5 w-5" aria-hidden="true" />
             </span>
             <span className="mt-3 text-sm font-extrabold text-ink">
@@ -185,7 +185,7 @@ export default function ProductMediaUploader({
       ) : null}
 
       {video && videoSource ? (
-        <div className="mt-5 rounded-2xl border border-petal bg-white p-3 shadow-sm">
+        <div className="mt-5 rounded-2xl border border-petal/70 bg-white p-3 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-muted">
@@ -201,19 +201,19 @@ export default function ProductMediaUploader({
             <button
               type="button"
               onClick={() => onVideoChange(null)}
-              className="inline-flex h-9 items-center gap-2 rounded-full border border-petal bg-white px-3 text-xs font-extrabold text-ink transition hover:bg-shell"
+              className="inline-flex h-9 items-center gap-2 rounded-full border border-petal bg-white px-3 text-xs font-extrabold text-terracotta transition hover:bg-shell"
             >
               <X className="h-3.5 w-3.5" aria-hidden="true" />
               {t("remove")}
             </button>
           </div>
-          <div className="mt-3 overflow-hidden rounded-xl bg-ink">
+          <div className="mt-3 overflow-hidden rounded-xl bg-charcoal">
             <video
               src={videoSource}
               controls
               className="aspect-video w-full object-cover"
             />
-            <div className="flex items-center gap-2 border-t border-white/10 bg-ink px-3 py-2 text-xs font-bold text-white">
+            <div className="flex items-center gap-2 border-t border-white/10 bg-charcoal px-3 py-2 text-xs font-bold text-white">
               <Play className="h-3.5 w-3.5 text-terracotta" aria-hidden="true" />
               {t("preview")}
             </div>

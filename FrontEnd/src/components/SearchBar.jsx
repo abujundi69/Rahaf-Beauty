@@ -18,7 +18,7 @@ export default function SearchBar({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="h-11 w-full rounded-2xl border border-transparent bg-white/88 py-2 pe-4 ps-11 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted/75 focus:border-terracotta/40 focus:bg-white focus:ring-4 focus:ring-shell/25"
+        className="h-11 w-full rounded-full border border-petal/60 bg-white/90 py-2 pe-4 ps-11 text-sm font-semibold text-ink shadow-sm outline-none transition placeholder:text-muted/75 focus:border-clay/50 focus:bg-white focus:ring-4 focus:ring-shell/70"
       />
     </form>
   );

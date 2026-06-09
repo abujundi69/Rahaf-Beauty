@@ -25,8 +25,8 @@ function DrawerLink({ to, icon: Icon, children, onClick, end }) {
       className={({ isActive }) =>
         `flex items-center gap-3 rounded-2xl px-4 py-3.5 text-sm font-extrabold transition ${
           isActive
-            ? "bg-shell text-ink"
-            : "text-ink hover:bg-ivory"
+            ? "bg-white text-terracotta shadow-sm"
+            : "text-white/90 hover:bg-white/20 hover:text-white"
         }`
       }
     >
@@ -79,7 +79,7 @@ export default function MobileMenu({ open, onClose, navLinks }) {
       <aside
         className={`absolute top-0 ${
           isRtl ? "right-0" : "left-0"
-        } h-screen w-[min(90vw,23rem)] flex flex-col overflow-y-auto overscroll-contain bg-blush p-4 text-ink shadow-soft`}
+        } beauty-sidebar h-screen w-[min(90vw,23rem)] flex flex-col overflow-y-auto overscroll-contain p-4`}
       >
         <div className="mb-5 flex items-start justify-between gap-4">
           <Link
@@ -90,14 +90,14 @@ export default function MobileMenu({ open, onClose, navLinks }) {
           >
             <BrandMark
               logoSize="drawer"
-              textClassName="text-base"
+              textClassName="text-base text-white"
             />
           </Link>
 
           <button
             type="button"
             onClick={onClose}
-            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ivory text-ink"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/20 text-white ring-1 ring-white/25 transition hover:bg-white/25"
             aria-label={t("closeMenu")}
           >
             <X className="h-5 w-5" aria-hidden="true" />
@@ -117,7 +117,7 @@ export default function MobileMenu({ open, onClose, navLinks }) {
           ))}
         </nav>
 
-        <div className="mt-6 border-t border-petal pt-5">
+        <div className="mt-6 border-t border-white/20 pt-5">
           <div className="grid gap-2">
             {isCustomer && (
               <>
@@ -214,7 +214,7 @@ export default function MobileMenu({ open, onClose, navLinks }) {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="flex items-center gap-3 rounded-2xl px-4 py-3.5 text-start text-sm font-extrabold text-ink transition hover:bg-ivory"
+                  className="flex items-center gap-3 rounded-2xl px-4 py-3.5 text-start text-sm font-extrabold text-white/90 transition hover:bg-white/20 hover:text-white"
                 >
                   <LogOut
                     className="h-4 w-4 shrink-0"

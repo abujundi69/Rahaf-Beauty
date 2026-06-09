@@ -10,7 +10,7 @@ export default function AccountOrders() {
   const { orders } = useOrders();
 
   return (
-    <section className="rounded-2xl bg-white p-5 shadow-sm">
+    <section className="beauty-shell p-5">
       <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
         {t("ordersPage")}
       </p>
@@ -25,7 +25,7 @@ export default function AccountOrders() {
             <Link
               key={order.id}
               to={`/account/orders/${order.id}`}
-              className="grid gap-3 rounded-2xl bg-ivory p-4 transition hover:bg-petal md:grid-cols-[1fr_auto]"
+              className="grid gap-3 rounded-2xl border border-petal/50 bg-ivory/80 p-4 transition hover:bg-shell md:grid-cols-[1fr_auto]"
             >
               <div>
                 <div className="flex flex-wrap items-center gap-2">

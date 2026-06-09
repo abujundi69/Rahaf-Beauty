@@ -11,7 +11,7 @@ export default function BrandMark({
     <span className={cn("inline-flex min-w-0 items-center gap-3", className)}>
       <BrandLogo
         size={logoSize}
-        className="rounded-full bg-white p-0.5 ring-1 ring-petal"
+        className="rounded-full bg-white p-0.5 shadow-sm ring-1 ring-petal"
       />
       <span
         className={cn(

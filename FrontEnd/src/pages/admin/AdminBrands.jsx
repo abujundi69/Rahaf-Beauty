@@ -20,7 +20,7 @@ function Field({ label, value, onChange, as = "input" }) {
       <Component
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 w-full rounded-2xl bg-ivory px-4 py-3 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/25"
+        className="mt-2 w-full rounded-[1.1rem] bg-ivory px-4 py-3 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
       />
     </label>
   );
@@ -90,7 +90,7 @@ export default function AdminBrands() {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={save} className="rounded-2xl bg-white p-5 shadow-sm md:p-6">
+      <form onSubmit={save} className="beauty-shell p-5 md:p-6">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
           {t("brands")}
         </p>
@@ -104,7 +104,7 @@ export default function AdminBrands() {
         ) : null}
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <Field label={t("brand")} value={form.name} onChange={(value) => update("name", value)} />
-          <label className="flex items-center gap-3 rounded-2xl bg-ivory px-4 py-3 text-sm font-bold text-ink">
+          <label className="flex items-center gap-3 rounded-[1.1rem] border border-petal/60 bg-ivory px-4 py-3 text-sm font-bold text-ink">
             <input
               type="checkbox"
               checked={form.isActive}
@@ -132,12 +132,12 @@ export default function AdminBrands() {
 
       <section className="grid gap-3">
         {brands.length === 0 ? (
-          <div className="rounded-2xl bg-white p-8 text-center text-sm font-bold text-muted shadow-sm">
+          <div className="beauty-shell p-8 text-center text-sm font-bold text-muted">
             {t("noData")}
           </div>
         ) : null}
         {brands.map((brand) => (
-          <article key={brand.id} className="grid gap-4 rounded-2xl bg-white p-5 shadow-sm md:grid-cols-[1fr_auto]">
+          <article key={brand.id} className="grid gap-4 rounded-[1.2rem] border border-petal/70 bg-white/95 p-5 shadow-sm transition hover:border-clay/40 hover:bg-shell/40 md:grid-cols-[1fr_auto]">
             <div>
               <h3 className="text-lg font-extrabold text-ink">{brand.name}</h3>
               {brand.description ? <p className="mt-2 text-sm text-muted">{brand.description}</p> : null}
@@ -146,7 +146,7 @@ export default function AdminBrands() {
               <button
                 type="button"
                 onClick={() => edit(brand)}
-                className="grid h-9 w-9 place-items-center rounded-full bg-ivory text-ink"
+                className="grid h-9 w-9 place-items-center rounded-full bg-shell text-terracotta shadow-sm"
                 aria-label={t("edit")}
               >
                 <Edit3 className="h-4 w-4" aria-hidden="true" />
@@ -154,7 +154,7 @@ export default function AdminBrands() {
               <button
                 type="button"
                 onClick={() => remove(brand.id)}
-                className="grid h-9 w-9 place-items-center rounded-full bg-ivory text-muted hover:bg-sale hover:text-white"
+                className="grid h-9 w-9 place-items-center rounded-full bg-ivory text-muted shadow-sm hover:bg-sale hover:text-white"
                 aria-label={t("delete")}
               >
                 <Trash2 className="h-4 w-4" aria-hidden="true" />

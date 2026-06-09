@@ -18,10 +18,10 @@ export default function BrandFilter({ brands, selectedBrands, onToggle, onClear 
             type="button"
             onClick={() => onToggle(brand)}
             className={cn(
-              "rounded-full px-4 py-2 text-sm font-semibold transition",
+              "rounded-full px-4 py-2 text-sm font-bold transition",
               active
-                ? "bg-ink text-white shadow-card"
-                : "bg-white text-muted shadow-sm hover:text-ink",
+                ? "bg-gradient-to-r from-clay to-terracotta text-white shadow-card"
+                : "border border-petal/60 bg-white text-muted shadow-sm hover:border-clay/40 hover:bg-shell/70 hover:text-terracotta",
             )}
           >
             {getBrandName(brand)}

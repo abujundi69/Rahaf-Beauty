@@ -48,8 +48,8 @@ export default function AdminDashboard() {
         {cards.map((card) => {
           const Icon = card.icon;
           return (
-            <article key={card.label} className="rounded-2xl bg-white p-5 shadow-sm">
-              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-petal text-terracotta">
+            <article key={card.label} className="rounded-[1.35rem] border border-petal/70 bg-white/95 p-5 shadow-card">
+              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-shell text-terracotta ring-1 ring-petal/70">
                 <Icon className="h-5 w-5" aria-hidden="true" />
               </span>
               <p className="mt-5 text-sm font-bold text-muted">{card.label}</p>
@@ -59,7 +59,7 @@ export default function AdminDashboard() {
         })}
       </div>
 
-      <section className="rounded-2xl bg-white p-6 shadow-sm">
+      <section className="rounded-[1.35rem] border border-petal/70 bg-white/95 p-6 shadow-card">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
           {t("overview")}
         </p>
@@ -80,13 +80,13 @@ export default function AdminDashboard() {
       </section>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <section className="rounded-2xl bg-white p-5 shadow-sm">
+        <section className="rounded-[1.35rem] border border-petal/70 bg-white/95 p-5 shadow-card">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
             {t("recentOrders")}
           </p>
           <div className="mt-4 space-y-3">
             {allOrders.slice(0, 4).map((order) => (
-              <article key={order.id} className="rounded-2xl bg-ivory p-4">
+              <article key={order.id} className="rounded-2xl bg-ivory/80 p-4 ring-1 ring-petal/50">
                 <div className="flex items-center justify-between gap-3">
                   <span className="font-extrabold text-ink">{order.id}</span>
                   <span className={`rounded-full px-3 py-1 text-xs font-bold ${orderStatusTone[order.status]}`}>
@@ -102,13 +102,13 @@ export default function AdminDashboard() {
           </div>
         </section>
 
-        <section className="rounded-2xl bg-white p-5 shadow-sm">
+        <section className="rounded-[1.35rem] border border-petal/70 bg-white/95 p-5 shadow-card">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
             {t("notifications")}
           </p>
           <div className="mt-4 space-y-3">
             {notifications.slice(0, 4).map((notification) => (
-              <article key={notification.id} className="rounded-2xl bg-ivory p-4">
+              <article key={notification.id} className="rounded-2xl bg-ivory/80 p-4 ring-1 ring-petal/50">
                 <div>
                   <p className="font-extrabold text-ink">
                     {notification.title}

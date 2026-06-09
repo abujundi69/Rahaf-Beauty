@@ -89,7 +89,7 @@ export default function SearchResults() {
 
   return (
     <section className="container-page py-10 md:py-14">
-      <div className="mb-6 rounded-2xl border border-petal/70 bg-white p-5 shadow-sm md:p-6">
+      <div className="mb-6 rounded-[1.35rem] border border-petal/70 bg-white/90 p-5 shadow-card md:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
@@ -106,7 +106,7 @@ export default function SearchResults() {
             {error ? <p className="mt-2 text-sm font-bold text-sale">{error}</p> : null}
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full bg-ivory px-4 py-2 text-sm font-extrabold text-ink">
+            <span className="rounded-full bg-shell px-4 py-2 text-sm font-extrabold text-terracotta ring-1 ring-petal/60">
               {loading ? t("loading") : `${formatNumber(visibleProducts.length)} ${t("items")}`}
               {category ? ` - ${getSearchCategoryLabel(category, language, t)}` : ""}
             </span>
@@ -125,7 +125,7 @@ export default function SearchResults() {
                   className={cn(
                     "inline-flex min-h-10 shrink-0 cursor-pointer items-center gap-2 rounded-full border px-4 text-sm font-extrabold transition",
                     selected
-                      ? "border-terracotta bg-shell text-ink shadow-sm"
+                      ? "border-clay bg-gradient-to-r from-clay to-terracotta text-white shadow-sm"
                       : "border-petal bg-blush text-ink hover:border-terracotta/70 hover:bg-white",
                   )}
                 >
@@ -140,11 +140,11 @@ export default function SearchResults() {
                   <span
                     className={cn(
                       "grid h-3.5 w-3.5 place-items-center rounded-full border",
-                      selected ? "border-clay bg-terracotta" : "border-petal bg-white",
+                      selected ? "border-white bg-white/20" : "border-petal bg-white",
                     )}
                     aria-hidden="true"
                   >
-                    {selected ? <span className="h-1.5 w-1.5 rounded-full bg-ink" /> : null}
+                    {selected ? <span className="h-1.5 w-1.5 rounded-full bg-white" /> : null}
                   </span>
                   {option.label}
                 </label>
