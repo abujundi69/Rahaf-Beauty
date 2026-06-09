@@ -26,7 +26,7 @@ function Field({ label, value, onChange, type = "text" }) {
 }
 
 export default function AccountSettings() {
-  const { accountSettings, deleteCurrentCustomer, updateAccountSettings, user } = useAuth();
+  const { accountSettings, deleteCurrentCustomer, updateAccountSettings, changePassword, changeEmail, user } = useAuth();
   const { wishlistProducts } = useStore();
   const { orders } = useOrders();
   const { showToast } = useToast();
@@ -37,6 +37,14 @@ export default function AccountSettings() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+
+  const [pwForm, setPwForm] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
+  const [pwSaving, setPwSaving] = useState(false);
+  const [pwFeedback, setPwFeedback] = useState(null);
+
+  const [emailForm, setEmailForm] = useState(user?.email ?? "");
+  const [emailSaving, setEmailSaving] = useState(false);
+  const [emailFeedback, setEmailFeedback] = useState(null);
 
   useEffect(() => {
     setForm(accountSettings);
@@ -58,6 +66,27 @@ export default function AccountSettings() {
       return;
     }
     setSaved(true);
+  };
+
+  const handleChangePassword = async () => {
+    setPwSaving(true);
+    setPwFeedback(null);
+    const result = await changePassword(pwForm);
+    setPwSaving(false);
+    if (result.ok) {
+      setPwForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      setPwFeedback({ ok: true, msg: t("settingsSaved") });
+    } else {
+      setPwFeedback({ ok: false, msg: result.message });
+    }
+  };
+
+  const handleChangeEmail = async () => {
+    setEmailSaving(true);
+    setEmailFeedback(null);
+    const result = await changeEmail({ newEmail: emailForm });
+    setEmailSaving(false);
+    setEmailFeedback({ ok: result.ok, msg: result.ok ? t("settingsSaved") : result.message });
   };
 
   const confirmDeleteAccount = async () => {
@@ -159,6 +188,38 @@ export default function AccountSettings() {
             </p>
           )}
         </div>
+      </section>
+
+      <section className="beauty-shell min-w-0 p-5 md:p-6">
+        <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
+          {t("changePassword")}
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field label={t("currentPassword")} value={pwForm.currentPassword} onChange={(v) => setPwForm((p) => ({ ...p, currentPassword: v }))} type="password" />
+          <Field label={t("newPassword")} value={pwForm.newPassword} onChange={(v) => setPwForm((p) => ({ ...p, newPassword: v }))} type="password" />
+          <Field label={t("confirmNewPassword")} value={pwForm.confirmPassword} onChange={(v) => setPwForm((p) => ({ ...p, confirmPassword: v }))} type="password" />
+        </div>
+        {pwFeedback ? (
+          <p className={`mt-3 text-sm font-bold ${pwFeedback.ok ? "text-olive" : "text-sale"}`}>{pwFeedback.msg}</p>
+        ) : null}
+        <Button type="button" className="mt-5" onClick={handleChangePassword} disabled={pwSaving}>
+          {pwSaving ? t("loading") : t("changePassword")}
+        </Button>
+      </section>
+
+      <section className="beauty-shell min-w-0 p-5 md:p-6">
+        <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
+          {t("changeEmail")}
+        </p>
+        <div className="max-w-sm">
+          <Field label={t("newEmail")} value={emailForm} onChange={setEmailForm} type="email" />
+        </div>
+        {emailFeedback ? (
+          <p className={`mt-3 text-sm font-bold ${emailFeedback.ok ? "text-olive" : "text-sale"}`}>{emailFeedback.msg}</p>
+        ) : null}
+        <Button type="button" className="mt-5" onClick={handleChangeEmail} disabled={emailSaving}>
+          {emailSaving ? t("loading") : t("save")}
+        </Button>
       </section>
 
       <section className="rounded-[1.35rem] border border-sale/25 bg-white/95 p-5 shadow-card md:p-6">

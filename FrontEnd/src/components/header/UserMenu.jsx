@@ -82,6 +82,9 @@ export default function UserMenu({ className = "" }) {
                 <MenuItem to="/admin/settings" icon={Settings} onClick={close}>
                   {t("storeSettings")}
                 </MenuItem>
+                <MenuItem to="/admin/account-settings" icon={UserRound} onClick={close}>
+                  {t("accountSettings")}
+                </MenuItem>
               </>
             ) : (
               <>

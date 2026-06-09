@@ -17,6 +17,7 @@ import AdminOrders from "../pages/admin/AdminOrders.jsx";
 import AdminProductPreview from "../pages/admin/AdminProductPreview.jsx";
 import AdminProductFormPage from "../pages/admin/AdminProductFormPage.jsx";
 import AdminProducts from "../pages/admin/AdminProducts.jsx";
+import AdminAccountSettings from "../pages/admin/AdminAccountSettings.jsx";
 import AdminSettings from "../pages/admin/AdminSettings.jsx";
 import Login from "../pages/auth/Login.jsx";
 import Register from "../pages/auth/Register.jsx";
@@ -110,6 +111,7 @@ export default function AppRoutes() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="customers" element={<AdminCustomers />} />
           <Route path="settings" element={<AdminSettings />} />
+          <Route path="account-settings" element={<AdminAccountSettings />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

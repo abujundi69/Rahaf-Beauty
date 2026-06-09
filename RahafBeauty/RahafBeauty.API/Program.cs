@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using RahafBeauty.API.Auth;
 using RahafBeauty.API.Middleware;
 using RahafBeauty.Application;
@@ -99,9 +99,19 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Enter the JWT token from /api/auth/login."
     });
 
-    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
     });
 });
 

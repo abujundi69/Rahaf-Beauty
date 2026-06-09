@@ -13,6 +13,9 @@ public interface IAccountService
     Task<AddressDto> UpdateAddressAsync(Guid id, AddressRequest request, CancellationToken cancellationToken = default);
     Task DeleteAddressAsync(Guid id, CancellationToken cancellationToken = default);
     Task<AddressDto> SetDefaultAddressAsync(Guid id, CancellationToken cancellationToken = default);
+    Task UpdateUserInfoAsync(UpdateUserInfoRequest request, CancellationToken cancellationToken = default);
+    Task ChangePasswordAsync(ChangePasswordRequest request, CancellationToken cancellationToken = default);
+    Task ChangeEmailAsync(ChangeEmailRequest request, CancellationToken cancellationToken = default);
     Task DeleteCurrentCustomerAsync(CancellationToken cancellationToken = default);
 }
 

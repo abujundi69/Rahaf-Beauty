@@ -34,4 +34,16 @@ export const accountApi = {
   deleteAccount() {
     return httpClient.delete("/account");
   },
+
+  updateUserInfo(payload) {
+    return httpClient.put("/user/update-info", payload);
+  },
+
+  changePassword(payload) {
+    return httpClient.put("/user/change-password", payload);
+  },
+
+  changeEmail(payload) {
+    return httpClient.put("/user/change-email", payload);
+  },
 };

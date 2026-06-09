@@ -29,6 +29,14 @@ public static partial class ValidationHelper
         }
     }
 
+    public static void Email(IDictionary<string, string[]> fields, string key, string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || !EmailRegex().IsMatch(value))
+        {
+            fields[key] = ["البريد الإلكتروني غير صالح"];
+        }
+    }
+
     public static void Password(IDictionary<string, string[]> fields, string key, string? value)
     {
         if (string.IsNullOrWhiteSpace(value) || value.Length < 8)
@@ -95,6 +103,9 @@ public static partial class ValidationHelper
 
     [GeneratedRegex(@"^\d{10}$")]
     private static partial Regex PhoneRegex();
+
+    [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
+    private static partial Regex EmailRegex();
 
     [GeneratedRegex(@"^#[0-9A-Fa-f]{6}$")]
     private static partial Regex HexColorRegex();

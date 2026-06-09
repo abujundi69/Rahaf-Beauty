@@ -74,4 +74,5 @@ public sealed class AccountController : ControllerBase
         var result = await _accountService.SetDefaultAddressAsync(id, cancellationToken);
         return Ok(ApiResponseFactory.Success(result, "تم تعيين العنوان الافتراضي"));
     }
+
 }

@@ -171,6 +171,43 @@ export function AuthProvider({ children }) {
     [token, user],
   );
 
+  const updateUserInfo = useCallback(
+    async ({ fullName }) => {
+      try {
+        await accountApi.updateUserInfo({ fullName });
+        const nextUser = { ...user, fullName };
+        writeSession({ token, refreshToken: readSession().refreshToken, user: nextUser });
+        setUser(nextUser);
+        setAccountSettingsState((prev) => ({ ...prev, fullName }));
+        return { ok: true };
+      } catch (error) {
+        return { ok: false, message: toArabicError(error), fields: error.fields ?? {} };
+      }
+    },
+    [token, user],
+  );
+
+  const changePassword = useCallback(async (payload) => {
+    try {
+      await accountApi.changePassword(payload);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, message: toArabicError(error), fields: error.fields ?? {} };
+    }
+  }, []);
+
+  const changeEmail = useCallback(async ({ newEmail }) => {
+    try {
+      await accountApi.changeEmail({ newEmail });
+      const nextUser = { ...user, email: newEmail };
+      writeSession({ token, refreshToken: readSession().refreshToken, user: nextUser });
+      setUser(nextUser);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, message: toArabicError(error), fields: error.fields ?? {} };
+    }
+  }, [token, user]);
+
   const deleteCurrentCustomer = useCallback(async () => {
     if (!user || user.role !== "customer") return { ok: false };
 
@@ -199,17 +236,23 @@ export function AuthProvider({ children }) {
       logout,
       registerCustomer,
       updateAccountSettings,
+      updateUserInfo,
+      changePassword,
+      changeEmail,
       deleteCurrentCustomer,
     }),
     [
       accountSettings,
       authLoading,
+      changeEmail,
+      changePassword,
       deleteCurrentCustomer,
       login,
       logout,
       registerCustomer,
       token,
       updateAccountSettings,
+      updateUserInfo,
       user,
     ],
   );

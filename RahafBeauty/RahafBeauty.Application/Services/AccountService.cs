@@ -8,9 +8,12 @@ namespace RahafBeauty.Application.Services;
 
 public sealed class AccountService : ServiceBase, IAccountService
 {
-    public AccountService(IApplicationDbContext db, ICurrentUserService currentUser)
+    private readonly IPasswordService _passwordService;
+
+    public AccountService(IApplicationDbContext db, ICurrentUserService currentUser, IPasswordService passwordService)
         : base(db, currentUser)
     {
+        _passwordService = passwordService;
     }
 
     public async Task<CustomerProfileDto> GetProfileAsync(CancellationToken cancellationToken = default)
@@ -177,6 +180,81 @@ public sealed class AccountService : ServiceBase, IAccountService
         address.UpdatedAt = DateTime.UtcNow;
         await Db.SaveChangesAsync(cancellationToken);
         return MapAddress(address);
+    }
+
+    public async Task UpdateUserInfoAsync(UpdateUserInfoRequest request, CancellationToken cancellationToken = default)
+    {
+        var fields = new Dictionary<string, string[]>();
+        ValidationHelper.Required(fields, nameof(request.FullName), request.FullName, "الاسم الكامل مطلوب");
+        ValidationHelper.ThrowIfInvalid(fields);
+
+        var user = await Db.Users
+            .FirstOrDefaultAsync(u => u.Id == RequireUserId() && !u.IsDeleted, cancellationToken)
+            ?? throw new UnauthorizedAppException("الحساب غير موجود أو تم حذفه");
+
+        user.FullName = request.FullName.Trim();
+        user.UpdatedAt = DateTime.UtcNow;
+        await Db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task ChangePasswordAsync(ChangePasswordRequest request, CancellationToken cancellationToken = default)
+    {
+        var fields = new Dictionary<string, string[]>();
+        ValidationHelper.Required(fields, nameof(request.CurrentPassword), request.CurrentPassword, "كلمة المرور الحالية مطلوبة");
+        ValidationHelper.Password(fields, nameof(request.NewPassword), request.NewPassword);
+        ValidationHelper.ThrowIfInvalid(fields);
+
+        if (request.NewPassword != request.ConfirmPassword)
+        {
+            throw new AppValidationException("كلمة المرور غير متطابقة", new Dictionary<string, string[]>
+            {
+                [nameof(request.ConfirmPassword)] = ["كلمة المرور غير متطابقة"]
+            });
+        }
+
+        var user = await Db.Users
+            .FirstOrDefaultAsync(u => u.Id == RequireUserId() && !u.IsDeleted, cancellationToken)
+            ?? throw new UnauthorizedAppException("الحساب غير موجود أو تم حذفه");
+
+        if (!_passwordService.VerifyPassword(request.CurrentPassword, user.PasswordHash))
+        {
+            throw new AppValidationException("كلمة المرور الحالية غير صحيحة", new Dictionary<string, string[]>
+            {
+                [nameof(request.CurrentPassword)] = ["كلمة المرور الحالية غير صحيحة"]
+            });
+        }
+
+        user.PasswordHash = _passwordService.HashPassword(request.NewPassword);
+        user.UpdatedAt = DateTime.UtcNow;
+        await Db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task ChangeEmailAsync(ChangeEmailRequest request, CancellationToken cancellationToken = default)
+    {
+        var fields = new Dictionary<string, string[]>();
+        ValidationHelper.Email(fields, nameof(request.NewEmail), request.NewEmail);
+        ValidationHelper.ThrowIfInvalid(fields);
+
+        var user = await Db.Users
+            .FirstOrDefaultAsync(u => u.Id == RequireUserId() && !u.IsDeleted, cancellationToken)
+            ?? throw new UnauthorizedAppException("الحساب غير موجود أو تم حذفه");
+
+        var normalized = request.NewEmail.Trim().ToLowerInvariant();
+        var emailExists = await Db.Users.AnyAsync(
+            u => u.Id != user.Id && u.Email == normalized && !u.IsDeleted,
+            cancellationToken);
+
+        if (emailExists)
+        {
+            throw new AppValidationException("البريد الإلكتروني مستخدم مسبقا", new Dictionary<string, string[]>
+            {
+                [nameof(request.NewEmail)] = ["البريد الإلكتروني مستخدم مسبقا"]
+            });
+        }
+
+        user.Email = normalized;
+        user.UpdatedAt = DateTime.UtcNow;
+        await Db.SaveChangesAsync(cancellationToken);
     }
 
     public async Task DeleteCurrentCustomerAsync(CancellationToken cancellationToken = default)
