@@ -7,6 +7,7 @@ import {
   getSearchCategoryLabel,
 } from "../components/header/CategorySearchDropdown.jsx";
 import ProductGrid from "../components/ProductGrid.jsx";
+import SEO from "../components/SEO.jsx";
 import SortDropdown from "../components/SortDropdown.jsx";
 import { useCatalog } from "../context/CatalogContext.jsx";
 import { useLanguage } from "../context/LanguageContext.jsx";
@@ -89,6 +90,11 @@ export default function SearchResults() {
 
   return (
     <section className="container-page py-10 md:py-14">
+      <SEO
+        title={query.trim() ? `نتائج البحث عن: ${query.trim()}` : "نتائج البحث"}
+        description={query.trim() ? `نتائج البحث عن "${query.trim()}" في متجر RAHAF BEAUTY` : "تسوقي من متجر RAHAF BEAUTY"}
+        keywords={query.trim() ? `${query.trim()}, RAHAF BEAUTY, متجر تجميل` : undefined}
+      />
       <div className="mb-6 rounded-[1.35rem] border border-petal/70 bg-white/90 p-5 shadow-card md:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>

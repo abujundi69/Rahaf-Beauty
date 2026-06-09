@@ -94,6 +94,11 @@ public sealed class DiscountService : IDiscountService
             throw new KeyNotFoundException("العلامة التجارية غير موجودة");
         }
 
+        if (request.Type == DiscountType.Category && !await _db.Categories.AnyAsync(c => c.Id == request.ScopeId, cancellationToken))
+        {
+            throw new KeyNotFoundException("الفئة غير موجودة");
+        }
+
         if (request.Type == DiscountType.Product && !await _db.Products.AnyAsync(p => p.Id == request.ScopeId, cancellationToken))
         {
             throw new KeyNotFoundException("المنتج غير موجود");

@@ -9,7 +9,7 @@ import { useLanguage } from "../../context/LanguageContext.jsx";
 import { useStoreSettings } from "../../context/StoreSettingsContext.jsx";
 import { useToast } from "../../context/ToastContext.jsx";
 import {
-  getBrandName,
+  getCategoryName,
   getProductName,
 } from "../../utils/catalog.js";
 import { mergeStoreSettings } from "../../utils/settings.js";
@@ -26,12 +26,10 @@ function emptyDiscounts() {
       id: "",
       percentage: "",
       enabled: false,
-      labelAr: "",
-      labelEn: "",
       startDate: "",
       endDate: "",
     },
-    brands: [],
+    categories: [],
     products: [],
   };
 }
@@ -44,16 +42,14 @@ function discountsToSettings(discounts) {
       id: discount.id,
       percentage: discount.percentage,
       enabled: discount.isEnabled,
-      labelAr: discount.label ?? "",
-      labelEn: discount.label ?? "",
       startDate: discount.startDate ?? "",
       endDate: discount.endDate ?? "",
     };
 
     if (discount.type === "Global") {
       next.global = item;
-    } else if (discount.type === "Brand") {
-      next.brands.push({ ...item, brand: discount.scopeId });
+    } else if (discount.type === "Category" || discount.type === "Brand") {
+      next.categories.push({ ...item, categoryId: discount.scopeId });
     } else if (discount.type === "Product") {
       next.products.push({ ...item, productId: discount.scopeId });
     }
@@ -116,13 +112,15 @@ function Toggle({ label, checked, onChange }) {
 }
 
 export default function AdminSettings() {
-  const { products, brands: catalogBrands, refreshCatalog } = useCatalog();
+  const { products, categories: catalogCategories, refreshCatalog } = useCatalog();
   const { language, t } = useLanguage();
   const { showToast } = useToast();
-  const { settings: liveSettings, saveSettings } = useStoreSettings();
+  const { settings: liveSettings, saveStoreInfo, saveAnnouncementOnly } = useStoreSettings();
   const [settings, setSettings] = useState(() => mergeStoreSettings(liveSettings));
-  const brands = useMemo(() => catalogBrands, [catalogBrands]);
-  const [saved, setSaved] = useState(false);
+  const categories = useMemo(() => catalogCategories, [catalogCategories]);
+  const [savedStoreInfo, setSavedStoreInfo] = useState(false);
+  const [savedAnnouncement, setSavedAnnouncement] = useState(false);
+  const [savedDiscounts, setSavedDiscounts] = useState(false);
   const [loadedDiscountIds, setLoadedDiscountIds] = useState(new Set());
   const [error, setError] = useState("");
 
@@ -155,11 +153,11 @@ export default function AdminSettings() {
   }, []);
 
   const update = (key, value) => {
-    setSaved(false);
+    setSavedStoreInfo(false);
     setSettings((current) => ({ ...current, [key]: value }));
   };
   const updateAnnouncement = (key, value) => {
-    setSaved(false);
+    setSavedAnnouncement(false);
     setSettings((current) => {
       const nextAnnouncement = { ...current.announcement, [key]: value };
       if (key === "textAr") nextAnnouncement.textEn = value;
@@ -171,64 +169,52 @@ export default function AdminSettings() {
     });
   };
   const updateGlobalDiscount = (key, value) => {
-    setSaved(false);
-    setSettings((current) => {
-      const nextGlobal = { ...current.discounts.global, [key]: value };
-      if (key === "labelAr") nextGlobal.labelEn = value;
-      return {
-        ...current,
-        discounts: {
-          ...current.discounts,
-          global: nextGlobal,
-        },
-      };
-    });
-  };
-  const updateBrandDiscount = (discountId, key, value) => {
-    setSaved(false);
+    setSavedDiscounts(false);
     setSettings((current) => ({
       ...current,
       discounts: {
         ...current.discounts,
-        brands: current.discounts.brands.map((discount) => {
-          if (discount.id !== discountId) return discount;
-          const nextDiscount = { ...discount, [key]: value };
-          if (key === "labelAr") nextDiscount.labelEn = value;
-          return nextDiscount;
-        }),
+        global: { ...current.discounts.global, [key]: value },
+      },
+    }));
+  };
+  const updateCategoryDiscount = (discountId, key, value) => {
+    setSavedDiscounts(false);
+    setSettings((current) => ({
+      ...current,
+      discounts: {
+        ...current.discounts,
+        categories: current.discounts.categories.map((discount) =>
+          discount.id !== discountId ? discount : { ...discount, [key]: value },
+        ),
       },
     }));
   };
   const updateProductDiscount = (discountId, key, value) => {
-    setSaved(false);
+    setSavedDiscounts(false);
     setSettings((current) => ({
       ...current,
       discounts: {
         ...current.discounts,
-        products: current.discounts.products.map((discount) => {
-          if (discount.id !== discountId) return discount;
-          const nextDiscount = { ...discount, [key]: value };
-          if (key === "labelAr") nextDiscount.labelEn = value;
-          return nextDiscount;
-        }),
+        products: current.discounts.products.map((discount) =>
+          discount.id !== discountId ? discount : { ...discount, [key]: value },
+        ),
       },
     }));
   };
-  const addBrandDiscount = () => {
-    setSaved(false);
+  const addCategoryDiscount = () => {
+    setSavedDiscounts(false);
     setSettings((current) => ({
       ...current,
       discounts: {
         ...current.discounts,
-        brands: [
-          ...current.discounts.brands,
+        categories: [
+          ...current.discounts.categories,
           {
-            id: `brand-discount-${Date.now()}`,
-            brand: brands[0]?.id ?? "",
+            id: `category-discount-${Date.now()}`,
+            categoryId: categories[0]?.id ?? "",
             percentage: "",
             enabled: true,
-            labelAr: "",
-            labelEn: "",
             startDate: "",
             endDate: "",
           },
@@ -237,7 +223,7 @@ export default function AdminSettings() {
     }));
   };
   const addProductDiscount = () => {
-    setSaved(false);
+    setSavedDiscounts(false);
     setSettings((current) => ({
       ...current,
       discounts: {
@@ -249,8 +235,6 @@ export default function AdminSettings() {
             productId: products[0]?.id ?? "",
             percentage: "",
             enabled: true,
-            labelAr: "",
-            labelEn: "",
             startDate: "",
             endDate: "",
           },
@@ -258,18 +242,18 @@ export default function AdminSettings() {
       },
     }));
   };
-  const removeBrandDiscount = (discountId) => {
-    setSaved(false);
+  const removeCategoryDiscount = (discountId) => {
+    setSavedDiscounts(false);
     setSettings((current) => ({
       ...current,
       discounts: {
         ...current.discounts,
-        brands: current.discounts.brands.filter((discount) => discount.id !== discountId),
+        categories: current.discounts.categories.filter((discount) => discount.id !== discountId),
       },
     }));
   };
   const removeProductDiscount = (discountId) => {
-    setSaved(false);
+    setSavedDiscounts(false);
     setSettings((current) => ({
       ...current,
       discounts: {
@@ -287,20 +271,20 @@ export default function AdminSettings() {
             type: "Global",
             scopeId: null,
             percentage: Number(discounts.global.percentage) || 0,
-            label: discounts.global.labelAr || null,
+            label: null,
             isEnabled: Boolean(discounts.global.enabled),
             startDate: discounts.global.startDate || null,
             endDate: discounts.global.endDate || null,
           }
         : null,
-      ...discounts.brands
-        .filter((discount) => discount.brand)
+      ...discounts.categories
+        .filter((discount) => discount.categoryId)
         .map((discount) => ({
           id: discount.id,
-          type: "Brand",
-          scopeId: discount.brand,
+          type: "Category",
+          scopeId: discount.categoryId,
           percentage: Number(discount.percentage) || 0,
-          label: discount.labelAr || null,
+          label: null,
           isEnabled: Boolean(discount.enabled),
           startDate: discount.startDate || null,
           endDate: discount.endDate || null,
@@ -312,7 +296,7 @@ export default function AdminSettings() {
           type: "Product",
           scopeId: discount.productId,
           percentage: Number(discount.percentage) || 0,
-          label: discount.labelAr || null,
+          label: null,
           isEnabled: Boolean(discount.enabled),
           startDate: discount.startDate || null,
           endDate: discount.endDate || null,
@@ -335,22 +319,38 @@ export default function AdminSettings() {
     await loadDiscounts();
   };
 
-  const save = async () => {
+  const handleSaveStoreInfo = async () => {
     try {
       setError("");
-      const nextSettings = await saveSettings({
-        ...settings,
-        defaultLanguage: "ar",
-        announcement: {
-          ...settings.announcement,
-          textEn: settings.announcement.textAr,
-          linkTextEn: settings.announcement.linkTextAr,
-        },
+      await saveStoreInfo(settings);
+      setSavedStoreInfo(true);
+      showToast({ message: t("settingsUpdated") });
+    } catch (requestError) {
+      setError(toArabicError(requestError));
+    }
+  };
+
+  const handleSaveAnnouncement = async () => {
+    try {
+      setError("");
+      await saveAnnouncementOnly({
+        ...settings.announcement,
+        textEn: settings.announcement.textAr,
+        linkTextEn: settings.announcement.linkTextAr,
       });
+      setSavedAnnouncement(true);
+      showToast({ message: t("settingsUpdated") });
+    } catch (requestError) {
+      setError(toArabicError(requestError));
+    }
+  };
+
+  const handleSaveDiscounts = async () => {
+    try {
+      setError("");
       await syncDiscounts(settings.discounts);
       await refreshCatalog();
-      setSettings((current) => mergeStoreSettings({ ...nextSettings, discounts: current.discounts }));
-      setSaved(true);
+      setSavedDiscounts(true);
       showToast({ message: t("settingsUpdated") });
     } catch (requestError) {
       setError(toArabicError(requestError));
@@ -366,11 +366,6 @@ export default function AdminSettings() {
         <h2 className="mt-2 font-display text-3xl font-bold text-ink">
           {t("storeSettings")}
         </h2>
-        {saved ? (
-          <span className="mt-4 inline-flex rounded-full bg-olive/10 px-3 py-1 text-xs font-bold text-olive">
-            {t("settingsSaved")}
-          </span>
-        ) : null}
         {error ? (
           <p className="mt-4 rounded-2xl bg-sale/10 px-4 py-3 text-sm font-bold text-sale">
             {error}
@@ -402,6 +397,14 @@ export default function AdminSettings() {
               <Field label={t("address")} value={settings.address} onChange={(value) => update("address", value)} as="textarea" />
             </div>
           </div>
+        </div>
+        <div className="mt-5 flex items-center justify-end gap-3">
+          {savedStoreInfo ? (
+            <span className="inline-flex rounded-full bg-olive/10 px-3 py-1 text-xs font-bold text-olive">
+              {t("settingsSaved")}
+            </span>
+          ) : null}
+          <Button onClick={handleSaveStoreInfo}>{t("save")}</Button>
         </div>
       </SectionCard>
 
@@ -435,9 +438,17 @@ export default function AdminSettings() {
             {settings.announcement.linkTextAr ? ` - ${settings.announcement.linkTextAr}` : ""}
           </div>
         </div>
+        <div className="mt-5 flex items-center justify-end gap-3">
+          {savedAnnouncement ? (
+            <span className="inline-flex rounded-full bg-olive/10 px-3 py-1 text-xs font-bold text-olive">
+              {t("settingsSaved")}
+            </span>
+          ) : null}
+          <Button onClick={handleSaveAnnouncement}>{t("save")}</Button>
+        </div>
       </SectionCard>
 
-      <SectionCard title="إعدادات الخصومات" description={t("discountPriority")}>
+      <SectionCard title="إعدادات الخصومات" description="أولوية الخصومات: المنتج > الفئة > الخصم العام">
         <div className="space-y-4">
           <div className="rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -448,9 +459,8 @@ export default function AdminSettings() {
                 onChange={(value) => updateGlobalDiscount("enabled", value)}
               />
             </div>
-            <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               <Field label={t("discountPercentage")} type="number" value={settings.discounts.global.percentage} onChange={(value) => updateGlobalDiscount("percentage", value)} />
-              <Field label={t("discountLabel")} value={settings.discounts.global.labelAr} onChange={(value) => updateGlobalDiscount("labelAr", value)} />
               <Field label={t("startDate")} type="date" value={settings.discounts.global.startDate} onChange={(value) => updateGlobalDiscount("startDate", value)} />
               <Field label={t("endDate")} type="date" value={settings.discounts.global.endDate} onChange={(value) => updateGlobalDiscount("endDate", value)} />
             </div>
@@ -458,36 +468,37 @@ export default function AdminSettings() {
 
           <div className="rounded-[1.2rem] border border-petal/60 bg-ivory/80 p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="text-sm font-extrabold text-ink">{t("brandDiscounts")}</p>
-              <Button type="button" size="sm" variant="outline" onClick={addBrandDiscount}>
+              <p className="text-sm font-extrabold text-ink">خصومات حسب الفئة</p>
+              <Button type="button" size="sm" variant="outline" onClick={addCategoryDiscount}>
                 <Plus className="h-4 w-4" aria-hidden="true" />
-                {t("addBrandDiscount")}
+                إضافة خصم فئة
               </Button>
             </div>
             <div className="mt-4 space-y-3">
-              {settings.discounts.brands.map((discount) => (
-                <div key={discount.id} className="grid gap-3 rounded-2xl border border-petal/50 bg-white p-3 lg:grid-cols-[1fr_8rem_1fr_9rem_9rem_auto] lg:items-end">
+              {settings.discounts.categories.map((discount) => (
+                <div key={discount.id} className="grid gap-3 rounded-2xl border border-petal/50 bg-white p-3 lg:grid-cols-[1fr_8rem_9rem_9rem_auto] lg:items-end">
                   <label className="block text-sm font-bold text-ink">
-                    {t("brand")}
+                    {t("category")}
                     <select
-                      value={discount.brand}
-                      onChange={(event) => updateBrandDiscount(discount.id, "brand", event.target.value)}
+                      value={discount.categoryId}
+                      onChange={(event) => updateCategoryDiscount(discount.id, "categoryId", event.target.value)}
                       className="mt-2 h-12 w-full rounded-full bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
                     >
-                      {brands.map((brand) => (
-                        <option key={brand.id} value={brand.id}>{getBrandName(brand.name)}</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                          {getCategoryName(category, language)}
+                        </option>
                       ))}
                     </select>
                   </label>
-                  <Field label={t("discountPercentage")} type="number" value={discount.percentage} onChange={(value) => updateBrandDiscount(discount.id, "percentage", value)} />
-                  <Field label={t("discountLabel")} value={discount.labelAr ?? ""} onChange={(value) => updateBrandDiscount(discount.id, "labelAr", value)} />
-                  <Field label={t("startDate")} type="date" value={discount.startDate ?? ""} onChange={(value) => updateBrandDiscount(discount.id, "startDate", value)} />
-                  <Field label={t("endDate")} type="date" value={discount.endDate ?? ""} onChange={(value) => updateBrandDiscount(discount.id, "endDate", value)} />
+                  <Field label={t("discountPercentage")} type="number" value={discount.percentage} onChange={(value) => updateCategoryDiscount(discount.id, "percentage", value)} />
+                  <Field label={t("startDate")} type="date" value={discount.startDate ?? ""} onChange={(value) => updateCategoryDiscount(discount.id, "startDate", value)} />
+                  <Field label={t("endDate")} type="date" value={discount.endDate ?? ""} onChange={(value) => updateCategoryDiscount(discount.id, "endDate", value)} />
                   <div className="flex items-center gap-2">
-                    <Toggle label={t("enabled")} checked={discount.enabled} onChange={(value) => updateBrandDiscount(discount.id, "enabled", value)} />
+                    <Toggle label={t("enabled")} checked={discount.enabled} onChange={(value) => updateCategoryDiscount(discount.id, "enabled", value)} />
                     <button
                       type="button"
-                      onClick={() => removeBrandDiscount(discount.id)}
+                      onClick={() => removeCategoryDiscount(discount.id)}
                       className="grid h-11 w-11 place-items-center rounded-full bg-white text-muted hover:bg-sale hover:text-white"
                       aria-label={t("remove")}
                     >
@@ -509,7 +520,7 @@ export default function AdminSettings() {
             </div>
             <div className="mt-4 space-y-3">
               {settings.discounts.products.map((discount) => (
-                <div key={discount.id} className="grid gap-3 rounded-2xl border border-petal/50 bg-white p-3 lg:grid-cols-[1.5fr_8rem_1fr_9rem_9rem_auto] lg:items-end">
+                <div key={discount.id} className="grid gap-3 rounded-2xl border border-petal/50 bg-white p-3 lg:grid-cols-[1.5fr_8rem_9rem_9rem_auto] lg:items-end">
                   <label className="block text-sm font-bold text-ink">
                     {t("products")}
                     <select
@@ -525,7 +536,6 @@ export default function AdminSettings() {
                     </select>
                   </label>
                   <Field label={t("discountPercentage")} type="number" value={discount.percentage} onChange={(value) => updateProductDiscount(discount.id, "percentage", value)} />
-                  <Field label={t("discountLabel")} value={discount.labelAr ?? ""} onChange={(value) => updateProductDiscount(discount.id, "labelAr", value)} />
                   <Field label={t("startDate")} type="date" value={discount.startDate ?? ""} onChange={(value) => updateProductDiscount(discount.id, "startDate", value)} />
                   <Field label={t("endDate")} type="date" value={discount.endDate ?? ""} onChange={(value) => updateProductDiscount(discount.id, "endDate", value)} />
                   <div className="flex items-center gap-2">
@@ -546,8 +556,13 @@ export default function AdminSettings() {
         </div>
       </SectionCard>
 
-      <div className="flex justify-end">
-        <Button onClick={save}>{t("save")}</Button>
+      <div className="flex items-center justify-end gap-3">
+        {savedDiscounts ? (
+          <span className="inline-flex rounded-full bg-olive/10 px-3 py-1 text-xs font-bold text-olive">
+            {t("settingsSaved")}
+          </span>
+        ) : null}
+        <Button onClick={handleSaveDiscounts}>{t("save")}</Button>
       </div>
     </div>
   );

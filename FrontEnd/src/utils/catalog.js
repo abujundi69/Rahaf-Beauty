@@ -107,7 +107,6 @@ export const filterProducts = (items, filters = {}, categoryMap = {}, settings) 
     brands = [],
     minPrice = "",
     maxPrice = "",
-    rating = "",
   } = filters;
 
   const normalizedQuery = query.trim().toLowerCase();
@@ -147,15 +146,13 @@ export const filterProducts = (items, filters = {}, categoryMap = {}, settings) 
     const effectivePrice = calculateProductPricing(product, settings).finalPrice;
     const matchesMin = minPrice === "" || effectivePrice >= min;
     const matchesMax = maxPrice === "" || effectivePrice <= max;
-    const matchesRating = rating === "" || product.rating >= Number(rating);
 
     return (
       matchesQuery &&
       matchesCategory &&
       matchesBrand &&
       matchesMin &&
-      matchesMax &&
-      matchesRating
+      matchesMax
     );
   });
 };
@@ -195,7 +192,6 @@ export const getDefaultFilters = () => ({
   brands: [],
   minPrice: "",
   maxPrice: "",
-  rating: "",
 });
 
 export const getCategoryOptions = (categories, language) =>

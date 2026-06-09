@@ -15,12 +15,10 @@ const defaultDiscounts = {
   global: {
     enabled: false,
     percentage: "",
-    labelAr: "",
-    labelEn: "",
     startDate: "",
     endDate: "",
   },
-  brands: [],
+  categories: [],
   products: [],
 };
 
@@ -51,8 +49,8 @@ export function mergeStoreSettings(settings = {}) {
         ...defaultDiscounts.global,
         ...(settings.discounts?.global ?? {}),
       },
-      brands: Array.isArray(settings.discounts?.brands)
-        ? settings.discounts.brands
+      categories: Array.isArray(settings.discounts?.categories)
+        ? settings.discounts.categories
         : [],
       products: Array.isArray(settings.discounts?.products)
         ? settings.discounts.products

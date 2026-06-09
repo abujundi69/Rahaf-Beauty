@@ -63,7 +63,6 @@ export default function FilterSidebar({
       brands: [],
       minPrice: "",
       maxPrice: "",
-      rating: "",
     }));
 
   return (
@@ -129,34 +128,6 @@ export default function FilterSidebar({
                 className="mt-2 h-10 w-full rounded-full bg-ivory px-3 text-sm text-ink outline-none focus:ring-4 focus:ring-shell/70"
               />
             </label>
-          </div>
-        </fieldset>
-
-        <fieldset className="border-b border-petal/70 pb-6">
-          <legend className="mb-4 text-sm font-extrabold text-ink">{t("rating")}</legend>
-          <div className="space-y-3">
-            {[4.8, 4.5, 4.0].map((rating) => (
-              <label
-                key={rating}
-                className="flex items-center gap-3 rounded-2xl px-2 py-1.5 text-sm font-semibold text-muted transition hover:bg-shell/60 hover:text-ink"
-              >
-                <input
-                  type="radio"
-                  name="rating"
-                  checked={filters.rating === String(rating)}
-                  onChange={() => update("rating", String(rating))}
-                  className="h-4 w-4 border-petal text-terracotta focus:ring-terracotta"
-                />
-                {rating}+
-              </label>
-            ))}
-            <button
-              type="button"
-              onClick={() => update("rating", "")}
-              className="text-sm font-semibold text-terracotta"
-            >
-              {t("anyRating")}
-            </button>
           </div>
         </fieldset>
 

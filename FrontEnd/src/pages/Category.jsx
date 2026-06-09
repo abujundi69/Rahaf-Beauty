@@ -7,12 +7,15 @@ import FilterSidebar from "../components/FilterSidebar.jsx";
 import MobileFilters from "../components/MobileFilters.jsx";
 import ProductGrid from "../components/ProductGrid.jsx";
 import SearchBar from "../components/SearchBar.jsx";
+import SEO from "../components/SEO.jsx";
 import SortDropdown from "../components/SortDropdown.jsx";
 import { useCatalog } from "../context/CatalogContext.jsx";
 import { useLanguage } from "../context/LanguageContext.jsx";
 import { useStoreSettings } from "../context/StoreSettingsContext.jsx";
 import {
   filterProducts,
+  getBrandName,
+  getCategoryName,
   getCategorySubtitle,
   getDefaultFilters,
   sortProducts,
@@ -63,8 +66,22 @@ export default function Category() {
     );
   }
 
+  const categoryName = getCategoryName(category, language);
+  const categoryKeywords = [
+    categoryName,
+    ...brandOptions.map((brand) => getBrandName(brand)),
+    "RAHAF BEAUTY",
+  ]
+    .filter(Boolean)
+    .join(", ");
+
   return (
     <section className="container-page py-10 md:py-14">
+      <SEO
+        title={categoryName}
+        description={getCategorySubtitle(category, language) || `تسوقي منتجات ${categoryName} من RAHAF BEAUTY`}
+        keywords={categoryKeywords}
+      />
       <CategoryHeader category={category} />
 
       <div className="mb-6 rounded-[1.35rem] border border-petal/70 bg-white/90 p-4 shadow-card">

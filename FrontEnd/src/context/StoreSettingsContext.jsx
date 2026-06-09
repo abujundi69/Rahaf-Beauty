@@ -53,6 +53,18 @@ export function StoreSettingsProvider({ children }) {
     return merged;
   }, []);
 
+  const saveStoreInfo = useCallback(async (nextSettings) => {
+    await settingsApi.updateStoreSettings(nextSettings);
+    setSettings((current) => mergeStoreSettings({ ...current, ...nextSettings }));
+  }, []);
+
+  const saveAnnouncementOnly = useCallback(async (announcement) => {
+    const updated = await settingsApi.updateAnnouncement(announcement);
+    setSettings((current) =>
+      mergeStoreSettings({ ...current, announcement: updated }),
+    );
+  }, []);
+
   const value = useMemo(
     () => ({
       settings,
@@ -60,8 +72,10 @@ export function StoreSettingsProvider({ children }) {
       settingsError,
       refreshSettings: loadSettings,
       saveSettings,
+      saveStoreInfo,
+      saveAnnouncementOnly,
     }),
-    [loadSettings, saveSettings, settings, settingsError, settingsLoading],
+    [loadSettings, saveAnnouncementOnly, saveSettings, saveStoreInfo, settings, settingsError, settingsLoading],
   );
 
   return (

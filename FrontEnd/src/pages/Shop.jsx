@@ -5,6 +5,7 @@ import MobileFilters from "../components/MobileFilters.jsx";
 import ProductGrid from "../components/ProductGrid.jsx";
 import SearchBar from "../components/SearchBar.jsx";
 import SectionHeader from "../components/SectionHeader.jsx";
+import SEO from "../components/SEO.jsx";
 import SortDropdown from "../components/SortDropdown.jsx";
 import { useCatalog } from "../context/CatalogContext.jsx";
 import { useLanguage } from "../context/LanguageContext.jsx";
@@ -30,6 +31,11 @@ export default function Shop() {
 
   return (
     <section className="container-page py-10 md:py-14">
+      <SEO
+        title="متجر RAHAF BEAUTY"
+        description="تسوقي أفضل منتجات العناية بالبشرة والمكياج والعطور والجسم من RAHAF BEAUTY"
+        keywords="RAHAF BEAUTY, متجر تجميل, عناية بالبشرة, مكياج, عطور, كريم, سيروم, مرطب"
+      />
       <SectionHeader
         eyebrow="متجر RAHAF BEAUTY"
         title="رف الجمال"

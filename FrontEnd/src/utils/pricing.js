@@ -22,13 +22,17 @@ export function getDiscountForProduct(product, settings = readStoreSettings(), n
   const productDiscount = (discounts.products ?? []).find(
     (discount) => discount.productId === product.id,
   );
-  const brandDiscount = (discounts.brands ?? []).find(
-    (discount) => discount.brand === product.brand,
+  const categoryDiscount = (discounts.categories ?? []).find(
+    (discount) =>
+      discount.categoryId &&
+      (discount.categoryId === product.categoryId ||
+        discount.categoryId === product.category ||
+        discount.categoryId === product.categorySlug),
   );
 
   const candidates = [
     { scope: "product", discount: productDiscount },
-    { scope: "brand", discount: brandDiscount },
+    { scope: "category", discount: categoryDiscount },
     { scope: "global", discount: discounts.global },
   ];
 
