@@ -16,7 +16,7 @@ export default function AuthRequiredModal({ open, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[150] grid place-items-center bg-ink/50 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-modal grid place-items-center bg-ink/50 p-4 backdrop-blur-sm">
       <button
         type="button"
         className="absolute inset-0"

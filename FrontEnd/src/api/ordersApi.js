@@ -1,5 +1,10 @@
 import { httpClient } from "./httpClient.js";
-import { extractItems, normalizeOrder, toBackendOrderStatus } from "./normalizers.js";
+import {
+  extractItems,
+  normalizeOrder,
+  normalizeReorderResult,
+  toBackendOrderStatus,
+} from "./normalizers.js";
 
 export const ordersApi = {
   async create(payload) {
@@ -13,6 +18,10 @@ export const ordersApi = {
 
   async get(id) {
     return normalizeOrder(await httpClient.get(`/orders/${id}`));
+  },
+
+  async reorder(id) {
+    return normalizeReorderResult(await httpClient.post(`/orders/${id}/reorder`));
   },
 
   async adminList(params = {}) {

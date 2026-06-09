@@ -542,6 +542,9 @@ namespace RahafBeauty.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<Guid?>("ProductColorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ProductColorNameSnapshot")
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
@@ -554,9 +557,15 @@ namespace RahafBeauty.Infrastructure.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<Guid?>("ProductSizeId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ProductSizeLabelSnapshot")
                         .HasMaxLength(80)
                         .HasColumnType("nvarchar(80)");
+
+                    b.Property<Guid?>("ProductVariantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -568,7 +577,13 @@ namespace RahafBeauty.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
+                    b.HasIndex("ProductColorId");
+
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductSizeId");
+
+                    b.HasIndex("ProductVariantId");
 
                     b.ToTable("OrderItems", (string)null);
                 });
@@ -620,8 +635,12 @@ namespace RahafBeauty.Infrastructure.Migrations
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("BrandId")
+                    b.Property<Guid?>("BrandId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BrandName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
@@ -1246,8 +1265,7 @@ namespace RahafBeauty.Infrastructure.Migrations
                     b.HasOne("RahafBeauty.Domain.Entities.Brand", "Brand")
                         .WithMany("Products")
                         .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("RahafBeauty.Domain.Entities.Category", "Category")
                         .WithMany("Products")

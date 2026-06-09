@@ -25,7 +25,7 @@ export default function AdminLayout() {
 
   return (
     <section className="container-wide py-10 md:py-14">
-      <div className="mb-8 overflow-hidden rounded-[1.5rem] border border-petal/70 bg-white/95 p-6 shadow-card">
+      <div className="mb-8 rounded-[1.5rem] border border-petal/70 bg-white/95 p-6 shadow-card">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
@@ -39,7 +39,7 @@ export default function AdminLayout() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="relative">
+            <div className="relative z-dropdown">
               <button
                 type="button"
                 onClick={() => setNotificationsOpen((open) => !open)}
@@ -54,7 +54,7 @@ export default function AdminLayout() {
                 ) : null}
               </button>
               {notificationsOpen ? (
-                <div className={`absolute top-12 z-[100] w-[min(88vw,22rem)] rounded-[1.35rem] border border-petal bg-white/95 p-3 text-ink shadow-soft backdrop-blur ${isRtl ? "left-0" : "right-0"}`}>
+                <div className={`absolute top-12 z-dropdown w-[min(88vw,22rem)] rounded-[1.35rem] border border-petal bg-white/95 p-3 text-ink shadow-soft backdrop-blur ${isRtl ? "left-0" : "right-0"}`}>
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <p className="text-sm font-extrabold text-ink">{t("notifications")}</p>
                     <button
@@ -120,7 +120,7 @@ export default function AdminLayout() {
       </div>
 
       {menuOpen ? (
-        <div className="fixed inset-0 z-[120] lg:hidden">
+        <div className="fixed inset-0 z-overlay lg:hidden">
           <button
             type="button"
             className="fixed inset-0 bg-ink/40"

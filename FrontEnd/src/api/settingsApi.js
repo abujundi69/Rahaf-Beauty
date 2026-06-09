@@ -13,7 +13,7 @@ export const settingsApi = {
       contactEmail: settings.contactEmail || null,
       phone: settings.phone || null,
       address: settings.address || null,
-      currency: settings.currency || "SAR",
+      currency: settings.currency || "ILS",
     });
   },
 

@@ -35,7 +35,7 @@ public sealed class SettingsService : ISettingsService
         settings.ContactEmail = request.ContactEmail?.Trim();
         settings.Phone = request.Phone?.Trim();
         settings.Address = request.Address?.Trim();
-        settings.Currency = request.Currency.Trim();
+        settings.Currency = "ILS";
         settings.UpdatedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync(cancellationToken);
         return MapStore(settings);
@@ -82,10 +82,17 @@ public sealed class SettingsService : ISettingsService
         var settings = await _db.StoreSettings.FirstOrDefaultAsync(cancellationToken);
         if (settings is not null)
         {
+            if (!string.Equals(settings.Currency, "ILS", StringComparison.OrdinalIgnoreCase))
+            {
+                settings.Currency = "ILS";
+                settings.UpdatedAt = DateTime.UtcNow;
+                await _db.SaveChangesAsync(cancellationToken);
+            }
+
             return settings;
         }
 
-        settings = new StoreSettings { StoreName = "RAHAF BEAUTY", Currency = "SAR" };
+        settings = new StoreSettings { StoreName = "RAHAF BEAUTY", Currency = "ILS" };
         _db.StoreSettings.Add(settings);
         await _db.SaveChangesAsync(cancellationToken);
         return settings;

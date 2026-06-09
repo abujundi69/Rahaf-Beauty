@@ -1,7 +1,13 @@
 import ProductCard from "./ProductCard.jsx";
 import { useLanguage } from "../context/LanguageContext.jsx";
+import { cn } from "../utils/cn.js";
 
-export default function ProductGrid({ products, emptyTitle = "", emptyDescription = "" }) {
+export default function ProductGrid({
+  products,
+  emptyTitle = "",
+  emptyDescription = "",
+  variant = "store",
+}) {
   const { t } = useLanguage();
 
   if (products.length === 0) {
@@ -20,10 +26,19 @@ export default function ProductGrid({ products, emptyTitle = "", emptyDescriptio
     );
   }
 
+  const isHome = variant === "home";
+
   return (
-    <div className="grid grid-cols-1 items-stretch gap-4 min-[420px]:grid-cols-2 md:grid-cols-3 lg:gap-5 xl:grid-cols-4 2xl:grid-cols-5">
+    <div
+      className={cn(
+        "grid items-stretch",
+        isHome
+          ? "grid-cols-2 gap-3.5 sm:gap-4 md:grid-cols-3 xl:grid-cols-4"
+          : "grid-cols-1 gap-5 min-[385px]:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 xl:gap-6",
+      )}
+    >
       {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
+        <ProductCard key={product.id} product={product} variant={variant} />
       ))}
     </div>
   );

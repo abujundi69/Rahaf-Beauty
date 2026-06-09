@@ -39,6 +39,12 @@
   --radius-lg: 24px;
   --radius-pill: 999px;
 
+  --z-header: 100;
+  --z-dropdown: 220;
+  --z-overlay: 300;
+  --z-modal: 340;
+  --z-toast: 420;
+
   color: var(--color-text);
   background: var(--color-bg);
   font-family: "Tajawal", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -344,6 +350,26 @@ html[dir="rtl"] .beauty-title {
   font-weight: 700;
 }
 
+.z-header {
+  z-index: var(--z-header);
+}
+
+.z-dropdown {
+  z-index: var(--z-dropdown);
+}
+
+.z-overlay {
+  z-index: var(--z-overlay);
+}
+
+.z-modal {
+  z-index: var(--z-modal);
+}
+
+.z-toast {
+  z-index: var(--z-toast);
+}
+
 /* =========================
    Product Images
    ========================= */
@@ -371,7 +397,7 @@ html[dir="rtl"] .beauty-title {
   position: fixed;
   top: calc(72px + 1rem);
   inset-inline-end: 1rem;
-  z-index: 9999;
+  z-index: var(--z-toast);
 }
 
 .toast-soft {

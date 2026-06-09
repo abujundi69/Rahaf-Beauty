@@ -393,7 +393,7 @@ export default function AdminSettings() {
                 onChange={(event) => update("currency", event.target.value)}
                 className="mt-2 h-12 w-full rounded-full bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
               >
-                <option value="SAR">ريال سعودي (SAR)</option>
+                <option value="ILS">شيكل إسرائيلي (₪)</option>
               </select>
             </label>
             <Field label={t("contactEmail")} value={settings.contactEmail} onChange={(value) => update("contactEmail", value)} />

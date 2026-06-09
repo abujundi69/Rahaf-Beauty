@@ -85,7 +85,7 @@ export function StoreProvider({ children }) {
         return { ok: false, reason: "auth" };
       }
 
-      const product = products.find((candidate) => candidate.id === productId);
+      const product = products.find((candidate) => candidate.id === productId) ?? options.product ?? null;
       const requested = Math.max(1, Number(quantity) || 1);
       const selectedColor = options.selectedColor ?? null;
       const selectedSize = options.selectedSize ?? null;

@@ -49,7 +49,7 @@ export function ToastProvider({ children }) {
       {children}
       <div
         className={cn(
-          "fixed top-[calc(env(safe-area-inset-top)+5.5rem)] z-[170] grid w-[min(92vw,24rem)] gap-3 sm:top-24",
+          "fixed top-[calc(env(safe-area-inset-top)+5.5rem)] z-toast grid w-[min(92vw,24rem)] gap-3 sm:top-24",
           isRtl ? "left-4" : "right-4",
         )}
       >

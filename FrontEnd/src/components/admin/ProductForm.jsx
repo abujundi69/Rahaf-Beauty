@@ -7,7 +7,6 @@ import { useLanguage } from "../../context/LanguageContext.jsx";
 import Button from "../Button.jsx";
 import ProductMediaUploader from "./ProductMediaUploader.jsx";
 import {
-  getBrandName,
   getCategoryName,
 } from "../../utils/catalog.js";
 import {
@@ -20,7 +19,7 @@ const hexColorPattern = /^#[0-9A-Fa-f]{6}$/;
 
 const emptyProduct = {
   nameAr: "",
-  brandId: "",
+  brandName: "",
   categoryId: "",
   price: "",
   status: "Active",
@@ -74,7 +73,6 @@ function Field({
 
 export default function ProductForm({ product, mode = "add" }) {
   const {
-    brands,
     categories,
     addProduct,
     updateProduct,
@@ -87,7 +85,7 @@ export default function ProductForm({ product, mode = "add" }) {
       product
         ? {
             nameAr: product.nameAr || product.name || "",
-            brandId: product.brandId || "",
+            brandName: product.brandName || product.brand || "",
             categoryId: product.categoryId || "",
             price: String(product.basePrice ?? product.price ?? ""),
             status: product.status === "Draft" ? "Draft" : "Active",
@@ -112,10 +110,9 @@ export default function ProductForm({ product, mode = "add" }) {
           }
         : {
             ...emptyProduct,
-            brandId: brands[0]?.id ?? "",
             categoryId: categories[0]?.id ?? "",
           },
-    [brands, categories, product],
+    [categories, product],
   );
   const [form, setForm] = useState(initial);
   const [mediaError, setMediaError] = useState("");
@@ -220,7 +217,6 @@ export default function ProductForm({ product, mode = "add" }) {
     const basePrice = Number(form.price);
 
     if (!form.nameAr.trim()) nextErrors.nameAr = t("fieldRequired");
-    if (!form.brandId) nextErrors.brandId = t("fieldRequired");
     if (!form.categoryId) nextErrors.categoryId = t("fieldRequired");
     if (form.price === "" || Number.isNaN(basePrice) || basePrice < 0) {
       nextErrors.price = t("validationBasePrice");
@@ -262,7 +258,8 @@ export default function ProductForm({ product, mode = "add" }) {
   const buildPayload = () => ({
     name: form.nameAr.trim(),
     slug: product?.slug ?? null,
-    brandId: form.brandId,
+    brandName: form.brandName?.trim() || null,
+    brandId: null,
     categoryId: form.categoryId,
     basePrice: Number(form.price),
     description: form.descriptionAr?.trim() || null,
@@ -365,23 +362,7 @@ export default function ProductForm({ product, mode = "add" }) {
 
       <div className="grid gap-4 md:grid-cols-2">
         <Field label={t("nameArabic")} value={form.nameAr} onChange={(value) => update("nameAr", value)} error={errors.nameAr} />
-        <label className="block text-sm font-bold text-ink">
-          {t("brand")}
-          <select
-            value={form.brandId}
-            onChange={(event) => update("brandId", event.target.value)}
-            className="mt-2 h-12 w-full rounded-full bg-white px-4 text-sm text-ink outline-none transition focus:ring-4 focus:ring-shell/70"
-            aria-invalid={Boolean(errors.brandId)}
-          >
-            <option value="">اختاري البراند</option>
-            {brands.map((brand) => (
-              <option key={brand.id} value={brand.id}>
-                {getBrandName(brand.name)}
-              </option>
-            ))}
-          </select>
-          {errors.brandId ? <span className="mt-2 block text-xs font-bold text-sale">{errors.brandId}</span> : null}
-        </label>
+        <Field label={`${t("brand")} (${t("optional")})`} value={form.brandName} onChange={(value) => update("brandName", value)} />
         <label className="block text-sm font-bold text-ink">
           {t("category")}
           <select

@@ -39,6 +39,13 @@ public sealed class OrdersController : ControllerBase
         var result = await _orderService.GetMyOrderAsync(id, cancellationToken);
         return Ok(ApiResponseFactory.Success(result));
     }
+
+    [HttpPost("{id:guid}/reorder")]
+    public async Task<IActionResult> Reorder(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _orderService.ReorderAsync(id, cancellationToken);
+        return Ok(ApiResponseFactory.Success(result, "تمت إضافة المنتجات المتاحة إلى السلة"));
+    }
 }
 
 [ApiController]

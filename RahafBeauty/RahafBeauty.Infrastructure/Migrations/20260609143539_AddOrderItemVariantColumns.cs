@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RahafBeauty.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class AddOrderItemVariantColumns : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -153,7 +153,8 @@ namespace RahafBeauty.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     Slug = table.Column<string>(type: "nvarchar(280)", maxLength: 280, nullable: false),
-                    BrandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BrandId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    BrandName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BasePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     BaseOldPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
@@ -429,8 +430,11 @@ namespace RahafBeauty.Infrastructure.Migrations
                     BrandNameSnapshot = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     CategoryNameSnapshot = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     ProductSizeLabelSnapshot = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true),
+                    ProductSizeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ProductColorNameSnapshot = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: true),
                     ProductColorHexSnapshot = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    ProductColorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ProductVariantId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DiscountPercent = table.Column<decimal>(type: "decimal(5,2)", nullable: true),
@@ -764,9 +768,24 @@ namespace RahafBeauty.Infrastructure.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_ProductColorId",
+                table: "OrderItems",
+                column: "ProductColorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_ProductId",
                 table: "OrderItems",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_ProductSizeId",
+                table: "OrderItems",
+                column: "ProductSizeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_ProductVariantId",
+                table: "OrderItems",
+                column: "ProductVariantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CreatedAt",

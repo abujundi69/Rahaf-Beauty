@@ -187,7 +187,7 @@ export default function HeaderSearch({
       </div>
 
       {shouldShowDropdown ? (
-        <div className="absolute inset-x-0 top-[calc(100%+0.5rem)] z-50 max-h-[min(70vh,28rem)] overflow-y-auto rounded-[1.35rem] border border-petal/80 bg-white/95 p-2 text-start shadow-soft backdrop-blur">
+        <div className="absolute inset-x-0 top-[calc(100%+0.5rem)] z-dropdown max-h-[min(70vh,28rem)] overflow-y-auto rounded-[1.35rem] border border-petal/80 bg-white/95 p-2 text-start shadow-soft backdrop-blur">
           {dropdownProducts.length > 0 ? (
             <div className="space-y-1">
               {dropdownProducts.map((product) => {

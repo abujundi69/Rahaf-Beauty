@@ -21,7 +21,7 @@ public sealed class DiscountResolver : IDiscountResolver
         _db = db;
     }
 
-    public async Task<DiscountResolutionDto> ResolveAsync(Guid productId, Guid brandId, DateTime utcNow, CancellationToken cancellationToken = default)
+    public async Task<DiscountResolutionDto> ResolveAsync(Guid productId, Guid? brandId, DateTime utcNow, CancellationToken cancellationToken = default)
     {
         var discounts = await _db.Discounts
             .AsNoTracking()
@@ -29,7 +29,7 @@ public sealed class DiscountResolver : IDiscountResolver
                 (!d.StartDate.HasValue || d.StartDate <= utcNow) &&
                 (!d.EndDate.HasValue || d.EndDate >= utcNow) &&
                 (d.Type == DiscountType.Global ||
-                 (d.Type == DiscountType.Brand && d.ScopeId == brandId) ||
+                 (brandId.HasValue && d.Type == DiscountType.Brand && d.ScopeId == brandId.Value) ||
                  (d.Type == DiscountType.Product && d.ScopeId == productId)))
             .ToListAsync(cancellationToken);
 

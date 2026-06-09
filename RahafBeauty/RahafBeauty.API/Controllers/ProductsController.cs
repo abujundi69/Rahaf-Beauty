@@ -28,6 +28,14 @@ public sealed class ProductsController : ControllerBase
         return Ok(ApiResponseFactory.Success(result));
     }
 
+    [HttpGet("most-ordered")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetMostOrdered([FromQuery] int limit = 4, CancellationToken cancellationToken = default)
+    {
+        var result = await _productService.GetMostOrderedAsync(limit, cancellationToken);
+        return Ok(ApiResponseFactory.Success(result));
+    }
+
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetProduct(Guid id, CancellationToken cancellationToken)

@@ -182,7 +182,7 @@ export default function AccountSettings() {
       </section>
 
       {deleteModalOpen ? (
-        <div className="fixed inset-0 z-[150] grid place-items-center bg-ink/50 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-modal grid place-items-center bg-ink/50 p-4 backdrop-blur-sm">
           <div className="w-full max-w-lg rounded-[1.5rem] border border-petal bg-white p-6 shadow-soft">
             <h3 className="font-display text-3xl font-bold text-ink">
               {t("deleteAccount")}

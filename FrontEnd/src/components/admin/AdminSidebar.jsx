@@ -6,7 +6,6 @@ import {
   Settings,
   ShoppingBag,
   Store,
-  Tags,
   Users,
 } from "lucide-react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -23,7 +22,6 @@ export default function AdminSidebar({ onNavigate, className = "" }) {
     { to: "/admin", label: t("dashboard"), icon: LayoutDashboard, end: true },
     { to: "/admin/products", label: t("manageProducts"), icon: Boxes },
     { to: "/admin/categories", label: t("manageCategories"), icon: FolderTree },
-    { to: "/admin/brands", label: t("brands"), icon: Tags },
     { to: "/admin/orders", label: t("ordersManagement"), icon: ShoppingBag },
     { to: "/admin/customers", label: t("customersManagement"), icon: Users },
     { to: "/admin/settings", label: t("storeSettings"), icon: Settings },

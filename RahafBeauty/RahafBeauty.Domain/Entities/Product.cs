@@ -8,9 +8,11 @@ public class Product : AuditableEntity
 
     public string Slug { get; set; } = string.Empty;
 
-    public Guid BrandId { get; set; }
+    public Guid? BrandId { get; set; }
 
-    public Brand Brand { get; set; } = null!;
+    public Brand? Brand { get; set; }
+
+    public string? BrandName { get; set; }
 
     public Guid CategoryId { get; set; }
 

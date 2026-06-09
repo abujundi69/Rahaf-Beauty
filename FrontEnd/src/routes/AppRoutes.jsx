@@ -10,7 +10,6 @@ import AccountProfile from "../pages/account/AccountProfile.jsx";
 import AccountSettings from "../pages/account/AccountSettings.jsx";
 import AccountWishlist from "../pages/account/AccountWishlist.jsx";
 import AdminCategories from "../pages/admin/AdminCategories.jsx";
-import AdminBrands from "../pages/admin/AdminBrands.jsx";
 import AdminCategoryFormPage from "../pages/admin/AdminCategoryFormPage.jsx";
 import AdminCustomers from "../pages/admin/AdminCustomers.jsx";
 import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
@@ -103,7 +102,6 @@ export default function AppRoutes() {
             element={<AdminProductFormPage mode="edit" />}
           />
           <Route path="categories" element={<AdminCategories />} />
-          <Route path="brands" element={<AdminBrands />} />
           <Route path="categories/new" element={<AdminCategoryFormPage />} />
           <Route
             path="categories/:id/edit"

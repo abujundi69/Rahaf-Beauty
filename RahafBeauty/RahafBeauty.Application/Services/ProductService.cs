@@ -28,7 +28,7 @@ public sealed class ProductService : IProductService
 
     public async Task<PagedResult<ProductSummaryDto>> GetProductsAsync(ProductQuery query, CancellationToken cancellationToken = default)
     {
-        var productsQuery = ProductReadQuery().Where(p => p.IsActive && p.Brand.IsActive && p.Category.IsActive);
+        var productsQuery = ProductReadQuery().Where(p => p.IsActive && (p.Brand == null || p.Brand.IsActive) && p.Category.IsActive);
 
         if (query.CategoryId.HasValue)
         {
@@ -65,6 +65,49 @@ public sealed class ProductService : IProductService
         };
 
         return await ToPagedSummaryAsync(productsQuery, query.Page, query.PageSize, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<ProductSummaryDto>> GetMostOrderedAsync(int limit = 4, CancellationToken cancellationToken = default)
+    {
+        limit = Math.Clamp(limit, 1, 24);
+
+        var orderedProductIds = await _db.OrderItems
+            .AsNoTracking()
+            .Where(item => item.ProductId.HasValue)
+            .GroupBy(item => item.ProductId!.Value)
+            .Select(group => new
+            {
+                ProductId = group.Key,
+                TotalQuantity = group.Sum(item => item.Quantity)
+            })
+            .Where(item => item.TotalQuantity > 0)
+            .OrderByDescending(item => item.TotalQuantity)
+            .ThenBy(item => item.ProductId)
+            .Take(limit)
+            .ToListAsync(cancellationToken);
+
+        if (orderedProductIds.Count == 0)
+        {
+            return [];
+        }
+
+        var ids = orderedProductIds.Select(item => item.ProductId).ToHashSet();
+        var products = await ProductReadQuery()
+            .AsNoTracking()
+            .Where(p => ids.Contains(p.Id) && p.IsActive && (p.Brand == null || p.Brand.IsActive) && p.Category.IsActive)
+            .ToListAsync(cancellationToken);
+
+        var productsById = products.ToDictionary(product => product.Id);
+        var result = new List<ProductSummaryDto>();
+        foreach (var orderedProduct in orderedProductIds)
+        {
+            if (productsById.TryGetValue(orderedProduct.ProductId, out var product))
+            {
+                result.Add(await MapSummaryAsync(product, cancellationToken));
+            }
+        }
+
+        return result;
     }
 
     public async Task<PagedResult<ProductDetailsDto>> GetAdminProductsAsync(ProductQuery query, CancellationToken cancellationToken = default)
@@ -112,7 +155,7 @@ public sealed class ProductService : IProductService
     {
         var product = await ProductReadQuery()
             .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Id == id && p.IsActive && p.Brand.IsActive && p.Category.IsActive, cancellationToken)
+            .FirstOrDefaultAsync(p => p.Id == id && p.IsActive && (p.Brand == null || p.Brand.IsActive) && p.Category.IsActive, cancellationToken)
             ?? throw new KeyNotFoundException("المنتج غير موجود");
 
         return await MapDetailsAsync(product, cancellationToken);
@@ -122,7 +165,7 @@ public sealed class ProductService : IProductService
     {
         var product = await ProductReadQuery()
             .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.Slug == slug && p.IsActive && p.Brand.IsActive && p.Category.IsActive, cancellationToken)
+            .FirstOrDefaultAsync(p => p.Slug == slug && p.IsActive && (p.Brand == null || p.Brand.IsActive) && p.Category.IsActive, cancellationToken)
             ?? throw new KeyNotFoundException("المنتج غير موجود");
 
         return await MapDetailsAsync(product, cancellationToken);
@@ -130,7 +173,7 @@ public sealed class ProductService : IProductService
 
     public async Task<PagedResult<ProductSummaryDto>> SearchProductsAsync(ProductSearchQuery query, CancellationToken cancellationToken = default)
     {
-        var productsQuery = ProductReadQuery().Where(p => p.IsActive && p.Brand.IsActive && p.Category.IsActive);
+        var productsQuery = ProductReadQuery().Where(p => p.IsActive && (p.Brand == null || p.Brand.IsActive) && p.Category.IsActive);
 
         if (!string.IsNullOrWhiteSpace(query.Q))
         {
@@ -138,7 +181,8 @@ public sealed class ProductService : IProductService
             productsQuery = productsQuery.Where(p =>
                 p.Name.Contains(term) ||
                 (p.Description != null && p.Description.Contains(term)) ||
-                p.Brand.Name.Contains(term) ||
+                (p.BrandName != null && p.BrandName.Contains(term)) ||
+                (p.Brand != null && p.Brand.Name.Contains(term)) ||
                 p.Category.Name.Contains(term));
         }
 
@@ -158,12 +202,14 @@ public sealed class ProductService : IProductService
     public async Task<ProductDetailsDto> CreateProductAsync(ProductRequest request, CancellationToken cancellationToken = default)
     {
         await ValidateProductRequestAsync(request, null, cancellationToken);
+        var brandName = await ResolveBrandNameAsync(request, cancellationToken);
 
         var product = new Product
         {
             Name = request.Name.Trim(),
             Slug = await EnsureUniqueSlugAsync(request.Slug, request.Name, null, cancellationToken),
             BrandId = request.BrandId,
+            BrandName = brandName,
             CategoryId = request.CategoryId,
             BasePrice = request.BasePrice,
             BaseOldPrice = null,
@@ -184,6 +230,7 @@ public sealed class ProductService : IProductService
     public async Task<ProductDetailsDto> UpdateProductAsync(Guid id, ProductRequest request, CancellationToken cancellationToken = default)
     {
         await ValidateProductRequestAsync(request, id, cancellationToken);
+        var brandName = await ResolveBrandNameAsync(request, cancellationToken);
         var product = await _db.Products
             .Include(p => p.Colors)
             .Include(p => p.Sizes)
@@ -194,6 +241,7 @@ public sealed class ProductService : IProductService
         product.Name = request.Name.Trim();
         product.Slug = await EnsureUniqueSlugAsync(request.Slug, request.Name, product.Id, cancellationToken);
         product.BrandId = request.BrandId;
+        product.BrandName = brandName;
         product.CategoryId = request.CategoryId;
         product.BasePrice = request.BasePrice;
         product.BaseOldPrice = null;
@@ -365,12 +413,16 @@ public sealed class ProductService : IProductService
             product.Name,
             product.Slug,
             MapBrand(product.Brand),
+            GetBrandDisplayName(product),
             MapCategory(product.Category),
             product.BasePrice,
             effectivePrice,
             discount.Percentage,
             product.Images.OrderBy(i => i.SortOrder).FirstOrDefault()?.ImageUrl,
             product.IsNew,
+            product.Colors.Select(c => new ProductColorDto(c.Id, c.Name, c.HexCode)).ToList(),
+            product.Sizes.Select(s => new ProductSizeDto(s.Id, s.Label, s.Price)).ToList(),
+            product.Variants.Select(v => new ProductVariantDto(v.Id, v.ProductColorId, v.ProductSizeId, v.Price)).ToList(),
             approvedReviews.Count == 0 ? 0 : Math.Round(approvedReviews.Average(r => r.Rating), 2),
             approvedReviews.Count);
     }
@@ -385,6 +437,7 @@ public sealed class ProductService : IProductService
             product.Name,
             product.Slug,
             MapBrand(product.Brand),
+            GetBrandDisplayName(product),
             MapCategory(product.Category),
             product.BasePrice,
             ApplyDiscount(product.BasePrice, discount.Percentage),
@@ -413,6 +466,11 @@ public sealed class ProductService : IProductService
             fields[nameof(request.BasePrice)] = ["السعر يجب أن يكون أكبر من صفر"];
         }
 
+        if (!string.IsNullOrWhiteSpace(request.BrandName) && request.BrandName.Trim().Length > 200)
+        {
+            fields[nameof(request.BrandName)] = ["اسم البراند يجب ألا يتجاوز 200 حرف"];
+        }
+
         var colorNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var (color, index) in (request.Colors ?? []).Select((value, index) => (value, index)))
         {
@@ -438,7 +496,7 @@ public sealed class ProductService : IProductService
 
         ValidationHelper.ThrowIfInvalid(fields);
 
-        if (!await _db.Brands.AnyAsync(b => b.Id == request.BrandId, cancellationToken))
+        if (request.BrandId.HasValue && !await _db.Brands.AnyAsync(b => b.Id == request.BrandId.Value, cancellationToken))
         {
             throw new KeyNotFoundException("العلامة التجارية غير موجودة");
         }
@@ -701,7 +759,29 @@ public sealed class ProductService : IProductService
     private static decimal ApplyDiscount(decimal price, decimal? percentage) =>
         percentage.HasValue ? Math.Round(price - (price * percentage.Value / 100m), 2) : price;
 
-    private static BrandDto MapBrand(Brand brand) => new(brand.Id, brand.Name, brand.Slug, brand.Description, brand.ImageUrl, brand.IsActive);
+    private async Task<string?> ResolveBrandNameAsync(ProductRequest request, CancellationToken cancellationToken)
+    {
+        var brandName = NormalizeBrandName(request.BrandName);
+        if (brandName is not null || !request.BrandId.HasValue)
+        {
+            return brandName;
+        }
+
+        return await _db.Brands
+            .AsNoTracking()
+            .Where(b => b.Id == request.BrandId.Value)
+            .Select(b => b.Name)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    private static string? NormalizeBrandName(string? brandName) =>
+        string.IsNullOrWhiteSpace(brandName) ? null : brandName.Trim();
+
+    private static string? GetBrandDisplayName(Product product) =>
+        NormalizeBrandName(product.BrandName) ?? product.Brand?.Name;
+
+    private static BrandDto? MapBrand(Brand? brand) =>
+        brand is null ? null : new BrandDto(brand.Id, brand.Name, brand.Slug, brand.Description, brand.ImageUrl, brand.IsActive);
 
     private static CategoryDto MapCategory(Category category) => new(category.Id, category.Name, category.Slug, category.Description, category.ImageUrl, category.IsActive);
 }

@@ -62,7 +62,7 @@ export default function UserMenu({ className = "" }) {
       </button>
 
       {open ? (
-        <div className="absolute end-0 top-full z-[90] mt-3 w-64 max-w-[calc(100vw-2rem)] rounded-[1.35rem] border border-petal bg-white/95 p-2 shadow-soft backdrop-blur">
+        <div className="absolute end-0 top-full z-dropdown mt-3 w-64 max-w-[calc(100vw-2rem)] rounded-[1.35rem] border border-petal bg-white/95 p-2 shadow-soft backdrop-blur">
           <div className="rounded-2xl border border-petal/60 bg-shell/60 px-3 py-3">
             <p className="truncate text-sm font-extrabold text-ink">{user?.fullName}</p>
             <p className="mt-1 truncate text-xs font-semibold text-muted">{user?.phoneNumber}</p>

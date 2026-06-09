@@ -14,6 +14,13 @@ export const productsApi = {
     return normalizePagedProducts(result);
   },
 
+  async mostOrdered(limit = 4) {
+    const result = await httpClient.get("/products/most-ordered", {
+      params: { limit },
+    });
+    return (result ?? []).map(normalizeProduct).filter(Boolean);
+  },
+
   async adminList(params = {}) {
     const result = await httpClient.get("/admin/products", { params });
     return normalizePagedProducts(result);

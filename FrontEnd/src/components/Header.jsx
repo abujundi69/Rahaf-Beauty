@@ -34,7 +34,7 @@ export default function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-[90] border-b border-petal/70 bg-white/95 shadow-[0_14px_40px_rgba(190,24,93,0.11)] backdrop-blur-xl">
+    <header className="sticky top-0 z-header border-b border-petal/70 bg-white/95 shadow-[0_14px_40px_rgba(190,24,93,0.11)] backdrop-blur-xl">
       <div className="container-wide">
         <div className="hidden grid-cols-[minmax(9.5rem,13rem)_minmax(28rem,1fr)_auto] items-center gap-5 py-4 lg:grid">
           <Link to="/" className="min-w-0 shrink-0" aria-label="العودة إلى RAHAF BEAUTY">

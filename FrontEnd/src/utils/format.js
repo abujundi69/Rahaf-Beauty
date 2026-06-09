@@ -20,12 +20,18 @@ export const formatCurrency = (value) => {
   }).format(amount)} ₪`;
 };
 
-export const formatDate = (value) =>
-  new Intl.DateTimeFormat("en-US", {
+export const formatDate = (value, locale = "ar") => {
+  if (!value) return "";
+
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return new Intl.DateTimeFormat(locale === "ar" ? "ar" : "en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
-  }).format(new Date(value));
+  }).format(date);
+};
 
 export const toEnglishDigits = (value) =>
   String(value)

@@ -233,7 +233,7 @@ export default function AdminOrders() {
       </div>
 
       {selectedOrderId ? (
-        <div className="fixed inset-0 z-[150] grid place-items-center bg-ink/50 p-3 backdrop-blur-sm sm:p-5">
+        <div className="fixed inset-0 z-modal grid place-items-center bg-ink/50 p-3 backdrop-blur-sm sm:p-5">
           <button
             type="button"
             className="absolute inset-0 cursor-default"

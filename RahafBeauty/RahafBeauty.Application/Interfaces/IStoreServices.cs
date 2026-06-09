@@ -19,6 +19,7 @@ public interface IAccountService
 public interface IProductService
 {
     Task<PagedResult<ProductSummaryDto>> GetProductsAsync(ProductQuery query, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<ProductSummaryDto>> GetMostOrderedAsync(int limit = 4, CancellationToken cancellationToken = default);
     Task<PagedResult<ProductDetailsDto>> GetAdminProductsAsync(ProductQuery query, CancellationToken cancellationToken = default);
     Task<ProductDetailsDto> GetProductByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<ProductDetailsDto> GetProductBySlugAsync(string slug, CancellationToken cancellationToken = default);
@@ -69,6 +70,7 @@ public interface IWishlistService
 public interface IOrderService
 {
     Task<OrderDto> CreateOrderAsync(CreateOrderRequest request, CancellationToken cancellationToken = default);
+    Task<ReorderResultDto> ReorderAsync(Guid id, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<OrderSummaryDto>> GetMyOrdersAsync(CancellationToken cancellationToken = default);
     Task<OrderDto> GetMyOrderAsync(Guid id, CancellationToken cancellationToken = default);
     Task<PagedResult<OrderSummaryDto>> GetAdminOrdersAsync(AdminOrderQuery query, CancellationToken cancellationToken = default);
@@ -109,7 +111,7 @@ public interface INotificationService
 
 public interface IDiscountResolver
 {
-    Task<DiscountResolutionDto> ResolveAsync(Guid productId, Guid brandId, DateTime utcNow, CancellationToken cancellationToken = default);
+    Task<DiscountResolutionDto> ResolveAsync(Guid productId, Guid? brandId, DateTime utcNow, CancellationToken cancellationToken = default);
 }
 
 public interface IPriceResolver

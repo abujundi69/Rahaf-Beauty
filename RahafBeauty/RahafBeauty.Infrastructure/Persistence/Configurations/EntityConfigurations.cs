@@ -115,6 +115,7 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Name).HasMaxLength(250).IsRequired();
         builder.Property(x => x.Slug).HasMaxLength(280).IsRequired();
+        builder.Property(x => x.BrandName).HasMaxLength(200);
         builder.Property(x => x.BasePrice).HasColumnType("decimal(18,2)");
         builder.Property(x => x.BaseOldPrice).HasColumnType("decimal(18,2)");
         builder.Property(x => x.SkinType).HasMaxLength(200);
@@ -127,7 +128,8 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.HasOne(x => x.Brand)
             .WithMany(x => x.Products)
             .HasForeignKey(x => x.BrandId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired(false);
 
         builder.HasOne(x => x.Category)
             .WithMany(x => x.Products)
@@ -314,6 +316,9 @@ internal sealed class OrderItemConfiguration : IEntityTypeConfiguration<OrderIte
         builder.Property(x => x.LineTotal).HasColumnType("decimal(18,2)");
         builder.HasIndex(x => x.OrderId);
         builder.HasIndex(x => x.ProductId);
+        builder.HasIndex(x => x.ProductSizeId);
+        builder.HasIndex(x => x.ProductColorId);
+        builder.HasIndex(x => x.ProductVariantId);
         builder.HasOne(x => x.Order).WithMany(x => x.Items).HasForeignKey(x => x.OrderId).OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(x => x.Product).WithMany(x => x.OrderItems).HasForeignKey(x => x.ProductId).OnDelete(DeleteBehavior.SetNull);
     }

@@ -66,7 +66,7 @@ export default function MobileMenu({ open, onClose, navLinks }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[120] lg:hidden">
+    <div className="fixed inset-0 z-overlay lg:hidden">
       {/* الخلفية المغبشة */}
       <button
         type="button"
@@ -165,14 +165,6 @@ export default function MobileMenu({ open, onClose, navLinks }) {
                       onClick={onClose}
                     >
                       {t("manageCategories")}
-                    </DrawerLink>
-
-                    <DrawerLink
-                      to="/admin/brands"
-                      icon={Package}
-                      onClick={onClose}
-                    >
-                      {t("brands")}
                     </DrawerLink>
 
                     <DrawerLink

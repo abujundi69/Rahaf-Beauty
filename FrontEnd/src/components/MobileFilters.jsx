@@ -20,7 +20,7 @@ export default function MobileFilters(props) {
         {t("filters")}
       </Button>
       {open ? (
-        <div className="fixed inset-0 z-[110] lg:hidden">
+        <div className="fixed inset-0 z-overlay lg:hidden">
           <button
             type="button"
             className="fixed inset-0 bg-ink/50 backdrop-blur-sm"

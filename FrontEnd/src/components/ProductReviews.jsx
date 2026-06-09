@@ -180,11 +180,7 @@ export default function ProductReviews({ product, onReviewCreated }) {
         </div>
       ) : null}
 
-      {!loading && !error && reviews.length === 0 ? (
-        <div className="rounded-2xl bg-shell p-6 text-center text-sm font-bold text-muted">
-          {t("noReviewsYet")}
-        </div>
-      ) : null}
+   
 
       <div className="grid gap-3">
         {reviews.map((review) => (

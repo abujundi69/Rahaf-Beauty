@@ -46,7 +46,7 @@ export function normalizeCategory(category) {
 }
 
 export function normalizeBrand(brand) {
-  if (!brand) return null;
+  if (!brand || typeof brand !== "object") return null;
   return {
     id: String(brand.id),
     slug: brand.slug || String(brand.id),
@@ -103,6 +103,7 @@ export function normalizeProduct(product) {
   if (!product) return null;
   const category = normalizeCategory(product.category);
   const brand = normalizeBrand(product.brand);
+  const brandName = product.brandName ?? brand?.name ?? (typeof product.brand === "string" ? product.brand : "");
   const media = normalizeProductMedia(product);
   const price = Number(product.effectivePrice ?? product.basePrice) || 0;
   const basePrice = Number(product.basePrice) || 0;
@@ -115,8 +116,9 @@ export function normalizeProduct(product) {
     name: product.name ?? "",
     nameAr: product.name ?? "",
     nameEn: product.name ?? "",
-    brand: brand?.name ?? "",
-    brandId: brand?.id ?? "",
+    brand: brandName,
+    brandName,
+    brandId: product.brandId ? String(product.brandId) : brand?.id ?? "",
     brandSlug: brand?.slug ?? "",
     brandData: brand,
     category: category?.slug ?? category?.id ?? "",
@@ -220,6 +222,15 @@ export function normalizeCart(cart) {
   };
 }
 
+export function normalizeReorderResult(result) {
+  return {
+    cart: normalizeCart(result?.cart),
+    warnings: Array.isArray(result?.warnings)
+      ? result.warnings.filter(Boolean).map(String)
+      : [],
+  };
+}
+
 export function normalizeWishlist(wishlist) {
   return {
     id: wishlist?.id ? String(wishlist.id) : "",
@@ -309,15 +320,22 @@ export function normalizeOrder(order) {
     originalUnitPrice: Number(item.unitPrice ?? item.finalUnitPrice) || 0,
     discountPercent: Number(item.discountPercent) || 0,
     lineTotal: Number(item.lineTotal) || 0,
-    selectedColor: item.colorName
+    selectedColor: item.productColorId || item.colorName
       ? {
+          id: item.productColorId ? String(item.productColorId) : "",
           name: item.colorName,
           nameAr: item.colorName,
           nameEn: item.colorName,
           hex: item.colorHex ?? "#E9B0BF",
         }
       : null,
-    selectedSize: item.sizeLabel ? { label: item.sizeLabel } : null,
+    selectedSize: item.productSizeId || item.sizeLabel
+      ? {
+          id: item.productSizeId ? String(item.productSizeId) : "",
+          label: item.sizeLabel ?? "",
+        }
+      : null,
+    selectedVariantId: item.productVariantId ? String(item.productVariantId) : null,
   }));
   const createdAt = order.createdAt ?? new Date().toISOString();
   const status = normalizeOrderStatus(order.status);
@@ -371,7 +389,7 @@ export function normalizeSettings(data) {
     contactEmail: store.contactEmail ?? "",
     phone: store.phone ?? "",
     address: store.address ?? "",
-    currency: store.currency ?? "SAR",
+    currency: store.currency ?? "ILS",
     announcement: normalizeAnnouncement(announcement),
     discounts: {
       global: {

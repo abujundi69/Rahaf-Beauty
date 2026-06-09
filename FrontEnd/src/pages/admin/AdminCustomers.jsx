@@ -115,7 +115,7 @@ export default function AdminCustomers() {
       </div>
 
       {selectedCustomer ? (
-        <div className="fixed inset-0 z-[150] grid place-items-center bg-ink/50 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-modal grid place-items-center bg-ink/50 p-4 backdrop-blur-sm">
           <div className="w-full max-w-lg rounded-[1.5rem] border border-petal bg-white p-6 shadow-soft">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-terracotta">
               {t("customerDetails")}

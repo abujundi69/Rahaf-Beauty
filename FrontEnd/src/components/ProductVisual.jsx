@@ -3,7 +3,7 @@ import { useLanguage } from "../context/LanguageContext.jsx";
 import { cn } from "../utils/cn.js";
 import { getProductPrimaryImageSource, isFileMediaSource } from "../utils/media.js";
 
-export default function ProductVisual({ product, className = "" }) {
+export default function ProductVisual({ product, className = "", imageClassName = "" }) {
   const { t } = useLanguage();
   const directImage = product?.image;
   const primaryImage =
@@ -23,7 +23,7 @@ export default function ProductVisual({ product, className = "" }) {
         <img
           src={primaryImage}
           alt=""
-          className="h-full w-full object-cover transition duration-500"
+          className={cn("h-full w-full object-cover transition duration-500", imageClassName)}
         />
       </div>
     );

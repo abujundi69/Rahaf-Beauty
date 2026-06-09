@@ -58,15 +58,22 @@ public sealed record OrderDto(
     IReadOnlyList<OrderItemDto> Items,
     IReadOnlyList<OrderStatusHistoryDto> StatusHistory);
 
+public sealed record ReorderResultDto(
+    CartDto Cart,
+    IReadOnlyList<string> Warnings);
+
 public sealed record OrderItemDto(
     Guid Id,
     Guid? ProductId,
     string ProductName,
     string? BrandName,
     string? CategoryName,
+    Guid? ProductSizeId,
     string? SizeLabel,
+    Guid? ProductColorId,
     string? ColorName,
     string? ColorHex,
+    Guid? ProductVariantId,
     int Quantity,
     decimal UnitPrice,
     decimal? DiscountPercent,

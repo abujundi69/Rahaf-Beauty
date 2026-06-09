@@ -205,6 +205,7 @@ export default function ProductDetails({ product, relatedProducts = [], onProduc
                   disabled={unavailable}
                 />
                 <AddToCartButton
+                  product={product}
                   productId={product.id}
                   quantity={quantity}
                   disabled={unavailable}

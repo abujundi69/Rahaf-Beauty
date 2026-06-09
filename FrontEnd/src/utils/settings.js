@@ -30,7 +30,7 @@ export const defaultStoreSettings = {
   contactEmail: "",
   phone: "",
   address: "",
-  currency: "SAR",
+  currency: "ILS",
   announcement: defaultAnnouncement,
   discounts: defaultDiscounts,
 };
@@ -39,6 +39,7 @@ export function mergeStoreSettings(settings = {}) {
   return {
     ...defaultStoreSettings,
     ...settings,
+    currency: "ILS",
     announcement: {
       ...defaultAnnouncement,
       ...(settings.announcement ?? {}),

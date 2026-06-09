@@ -20,9 +20,15 @@ public class OrderItem : CreationEntity
 
     public string? ProductSizeLabelSnapshot { get; set; }
 
+    public Guid? ProductSizeId { get; set; }
+
     public string? ProductColorNameSnapshot { get; set; }
 
     public string? ProductColorHexSnapshot { get; set; }
+
+    public Guid? ProductColorId { get; set; }
+
+    public Guid? ProductVariantId { get; set; }
 
     public int Quantity { get; set; }
 
