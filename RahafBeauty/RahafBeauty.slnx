@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="RahafBeauty.API/RahafBeauty.API.csproj" />
+  <Project Path="RahafBeauty.Application/RahafBeauty.Application.csproj" />
+  <Project Path="RahafBeauty.Domain/RahafBeauty.Domain.csproj" />
+  <Project Path="RahafBeauty.Infrastructure/RahafBeauty.Infrastructure.csproj" />
+</Solution>

@@ -1,0 +1,1572 @@
+RAHAF BEAUTY - BACKEND DATABASE AND API SPECIFICATION
+=====================================================
+
+1. PROJECT OVERVIEW
+-------------------
+
+System name:
+RAHAF BEAUTY
+
+System type:
+Arabic-first ecommerce beauty/cosmetics system for browsing products, managing cart/wishlist, placing cash-on-delivery orders, and managing the store through an admin dashboard.
+
+Frontend behavior to preserve in the backend:
+- Arabic-only storefront and admin UI.
+- RTL by default.
+- English digits in all formatted numbers.
+- Frontend roles:
+  - Admin: store management only.
+  - Customer: shopping, cart, wishlist, orders, profile, addresses, account deletion.
+
+Backend roles:
+- Admin
+- Customer
+
+Recommended backend style:
+- REST API.
+- JSON request/response bodies.
+- Token or secure cookie based authentication.
+- Use server-side authorization checks for every admin/customer endpoint.
+- Store dates in UTC.
+- Keep order snapshots immutable enough for historical records.
+
+
+2. DATABASE TABLES
+------------------
+
+Table: Users
+Purpose:
+Stores login identity, role, account deletion state, and core authentication data.
+
+Fields:
+- Id: uuid, required, primary key.
+- FullName: nvarchar(200), required for active customers/admins.
+- Email: nvarchar(320), required for active users, nullable/anonymized after deletion.
+- PhoneNumber: nvarchar(40), required for active customers, nullable/anonymized after deletion.
+- PasswordHash: nvarchar(500), required.
+- Role: enum UserRole, required.
+- IsDeleted: bit/boolean, required, default false.
+- DeletedAt: datetime nullable.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Unique filtered index on Email where IsDeleted = false.
+- Unique filtered index on PhoneNumber where IsDeleted = false, if phone login or uniqueness is required.
+- Index on Role.
+- Index on IsDeleted.
+
+Relationships:
+- One User has one CustomerProfile.
+- One User has many CustomerAddresses.
+- One User has one Cart.
+- One User has one Wishlist.
+- One User has many Orders.
+- One User has many ProductReviews.
+
+Notes:
+- Deleted accounts must not be able to login.
+- Email and phone should be removed or anonymized during customer account deletion.
+- Do not physically delete Users if audit trails are needed; use IsDeleted.
+
+
+Table: CustomerProfiles
+Purpose:
+Stores customer-specific profile data separate from authentication.
+
+Fields:
+- Id: uuid, required, primary key.
+- UserId: uuid, required, foreign key to Users.Id.
+- PreferredName: nvarchar(150), optional.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Unique index on UserId.
+
+Relationships:
+- Belongs to Users.
+
+Notes:
+- Delete or anonymize this row when a customer deletes the account.
+
+
+Table: CustomerAddresses
+Purpose:
+Stores saved delivery addresses for customers.
+
+Fields:
+- Id: uuid, required, primary key.
+- UserId: uuid, required, foreign key to Users.Id.
+- City: nvarchar(120), required.
+- Area: nvarchar(120), required.
+- Street: nvarchar(200), required.
+- Building: nvarchar(100), optional.
+- Notes: nvarchar(1000), optional.
+- IsDefault: bit/boolean, required, default false.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Index on UserId.
+- Filtered index on UserId + IsDefault where IsDefault = true.
+
+Relationships:
+- Belongs to Users.
+
+Notes:
+- Remove all addresses when the customer deletes the account.
+- Orders store their own address snapshot, so deleting an address must not affect existing orders.
+
+
+Table: Brands
+Purpose:
+Stores product brands used for filtering, products, and brand-level discounts.
+
+Fields:
+- Id: uuid, required, primary key.
+- Name: nvarchar(200), required.
+- Slug: nvarchar(220), required.
+- Description: nvarchar(max), optional.
+- IsActive: bit/boolean, required, default true.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Unique index on Slug.
+- Index on IsActive.
+
+Relationships:
+- One Brand has many Products.
+- One Brand can have many Discounts where Type = Brand.
+
+Notes:
+- Visible names in the UI should be Arabic.
+- Slugs can be internal and do not need to be shown to customers.
+
+
+Table: Categories
+Purpose:
+Stores product categories for navigation, filtering, and product grouping.
+
+Fields:
+- Id: uuid, required, primary key.
+- Name: nvarchar(200), required.
+- Slug: nvarchar(220), required.
+- Description: nvarchar(max), optional.
+- ImageUrl: nvarchar(1000), optional.
+- IsActive: bit/boolean, required, default true.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Unique index on Slug.
+- Index on IsActive.
+
+Relationships:
+- One Category has many Products.
+
+Notes:
+- Category names and descriptions should be Arabic for the frontend.
+
+
+Table: Products
+Purpose:
+Stores core product data and base pricing.
+
+Fields:
+- Id: uuid, required, primary key.
+- Name: nvarchar(250), required.
+- Slug: nvarchar(280), required.
+- BrandId: uuid, required, foreign key to Brands.Id.
+- CategoryId: uuid, required, foreign key to Categories.Id.
+- BasePrice: decimal(18,2), required.
+- BaseOldPrice: decimal(18,2), optional.
+- Description: nvarchar(max), optional.
+- Ingredients: nvarchar(max), optional.
+- HowToUse: nvarchar(max), optional.
+- SkinType: nvarchar(200), optional.
+- IsActive: bit/boolean, required, default true.
+- IsNew: bit/boolean, required, default false.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Unique index on Slug.
+- Index on BrandId.
+- Index on CategoryId.
+- Index on IsActive.
+- Index on IsNew.
+- Full-text/search index on Name and Description if supported.
+
+Relationships:
+- Belongs to Brand.
+- Belongs to Category.
+- Has many ProductImages.
+- Has many ProductVideos.
+- Has many ProductColors.
+- Has many ProductSizes.
+- Has many ProductVariants.
+- Has many ProductReviews.
+- Has many CartItems.
+- Has many OrderItems through ProductId, nullable for historical preservation.
+
+Notes:
+- Admin must not manually set Rating or ReviewCount.
+- Rating is calculated from ProductReviews.
+- BasePrice is used when no selected size/variant overrides price.
+
+
+Table: ProductImages
+Purpose:
+Stores product image media.
+
+Fields:
+- Id: uuid, required, primary key.
+- ProductId: uuid, required, foreign key to Products.Id.
+- ImageUrl: nvarchar(1000), required.
+- AltText: nvarchar(250), optional.
+- SortOrder: int, required, default 0.
+- CreatedAt: datetime required.
+
+Indexes:
+- Index on ProductId.
+- Index on ProductId + SortOrder.
+
+Relationships:
+- Belongs to Products.
+
+
+Table: ProductVideos
+Purpose:
+Stores product video media.
+
+Fields:
+- Id: uuid, required, primary key.
+- ProductId: uuid, required, foreign key to Products.Id.
+- VideoUrl: nvarchar(1000), required.
+- SortOrder: int, required, default 0.
+- CreatedAt: datetime required.
+
+Indexes:
+- Index on ProductId.
+- Index on ProductId + SortOrder.
+
+Relationships:
+- Belongs to Products.
+
+
+Table: ProductColors
+Purpose:
+Stores product color options.
+
+Fields:
+- Id: uuid, required, primary key.
+- ProductId: uuid, required, foreign key to Products.Id.
+- Name: nvarchar(120), required.
+- HexCode: nvarchar(20), required.
+- CreatedAt: datetime required.
+
+Indexes:
+- Index on ProductId.
+
+Relationships:
+- Belongs to Products.
+- Can be referenced by ProductVariants, CartItems, and OrderItems snapshots.
+
+Notes:
+- HexCode must be a valid color such as #E9B0BF.
+
+
+Table: ProductSizes
+Purpose:
+Stores product size options with size-specific pricing and stock.
+
+Fields:
+- Id: uuid, required, primary key.
+- ProductId: uuid, required, foreign key to Products.Id.
+- Label: nvarchar(80), required.
+- Price: decimal(18,2), optional. If null, use Products.BasePrice.
+- OldPrice: decimal(18,2), optional.
+- Stock: int, optional. If null, use product-level stock or variant stock.
+- SKU: nvarchar(120), optional.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Index on ProductId.
+- Unique index on ProductId + Label if duplicate size labels are not allowed.
+- Unique filtered index on SKU where SKU is not null.
+
+Relationships:
+- Belongs to Products.
+- Can be referenced by ProductVariants, CartItems, and OrderItems snapshots.
+
+Notes:
+- Size-specific price must be used in product detail, cart, checkout, and order totals.
+- Stock cannot be negative.
+
+
+Table: ProductVariants
+Purpose:
+Stores optional concrete combinations of product color and size with price, stock, and SKU.
+
+Fields:
+- Id: uuid, required, primary key.
+- ProductId: uuid, required, foreign key to Products.Id.
+- ProductColorId: uuid, optional, foreign key to ProductColors.Id.
+- ProductSizeId: uuid, optional, foreign key to ProductSizes.Id.
+- Price: decimal(18,2), optional.
+- OldPrice: decimal(18,2), optional.
+- Stock: int, required, default 0.
+- SKU: nvarchar(120), optional.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Index on ProductId.
+- Index on ProductColorId.
+- Index on ProductSizeId.
+- Unique index on ProductId + ProductColorId + ProductSizeId where needed.
+- Unique filtered index on SKU where SKU is not null.
+
+Relationships:
+- Belongs to Products.
+- Optionally belongs to ProductColors.
+- Optionally belongs to ProductSizes.
+
+Notes:
+- Use this table if color-size stock/pricing combinations are required.
+- If not using concrete variants, ProductSizes and ProductColors are enough.
+
+
+Table: Wishlists
+Purpose:
+Stores one wishlist per customer.
+
+Fields:
+- Id: uuid, required, primary key.
+- UserId: uuid, required, foreign key to Users.Id.
+- CreatedAt: datetime required.
+
+Indexes:
+- Unique index on UserId.
+
+Relationships:
+- Belongs to Users.
+- Has many WishlistItems.
+
+
+Table: WishlistItems
+Purpose:
+Stores products saved by a customer.
+
+Fields:
+- Id: uuid, required, primary key.
+- WishlistId: uuid, required, foreign key to Wishlists.Id.
+- ProductId: uuid, required, foreign key to Products.Id.
+- CreatedAt: datetime required.
+
+Indexes:
+- Index on WishlistId.
+- Unique index on WishlistId + ProductId.
+
+Relationships:
+- Belongs to Wishlists.
+- Belongs to Products.
+
+
+Table: Carts
+Purpose:
+Stores one active cart per customer.
+
+Fields:
+- Id: uuid, required, primary key.
+- UserId: uuid, required, foreign key to Users.Id.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Unique index on UserId.
+
+Relationships:
+- Belongs to Users.
+- Has many CartItems.
+
+
+Table: CartItems
+Purpose:
+Stores selected cart lines, including selected variant and price snapshot at add/update time.
+
+Fields:
+- Id: uuid, required, primary key.
+- CartId: uuid, required, foreign key to Carts.Id.
+- ProductId: uuid, required, foreign key to Products.Id.
+- ProductSizeId: uuid, optional, foreign key to ProductSizes.Id.
+- ProductColorId: uuid, optional, foreign key to ProductColors.Id.
+- ProductVariantId: uuid, optional, foreign key to ProductVariants.Id.
+- Quantity: int, required.
+- UnitPrice: decimal(18,2), required.
+- DiscountPercent: decimal(5,2), optional.
+- FinalUnitPrice: decimal(18,2), required.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Index on CartId.
+- Index on ProductId.
+- Unique index on CartId + ProductId + ProductSizeId + ProductColorId + ProductVariantId.
+
+Relationships:
+- Belongs to Carts.
+- Belongs to Products.
+- Optionally belongs to ProductSizes, ProductColors, ProductVariants.
+
+Validation:
+- Quantity must be greater than 0.
+- Quantity cannot exceed available selected size/variant stock.
+- Required product color/size must be selected before adding to cart.
+
+
+Table: Orders
+Purpose:
+Stores order header, customer snapshot, delivery address snapshot, payment, totals, and current status.
+
+Fields:
+- Id: uuid, required, primary key.
+- OrderNumber: nvarchar(50), required.
+- UserId: uuid, nullable, foreign key to Users.Id. Nullable after account deletion.
+- CustomerDeleted: bit/boolean, required, default false.
+- CustomerNameSnapshot: nvarchar(200), required.
+- CustomerPhoneSnapshot: nvarchar(40), nullable/anonymized on account deletion.
+- CustomerEmailSnapshot: nvarchar(320), nullable/anonymized on account deletion.
+- City: nvarchar(120), required.
+- Area: nvarchar(120), required.
+- Street: nvarchar(200), required.
+- Building: nvarchar(100), optional.
+- Notes: nvarchar(1000), optional.
+- Subtotal: decimal(18,2), required.
+- DiscountTotal: decimal(18,2), required, default 0.
+- DeliveryFee: decimal(18,2), required, default 0.
+- Total: decimal(18,2), required.
+- PaymentMethod: enum PaymentMethod, required.
+- PaymentStatus: enum PaymentStatus, required.
+- Status: enum OrderStatus, required.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Unique index on OrderNumber.
+- Index on UserId.
+- Index on Status.
+- Index on CreatedAt.
+- Index on PaymentStatus.
+
+Relationships:
+- Belongs to Users, nullable.
+- Has many OrderItems.
+- Has many OrderStatusHistory rows.
+- Can have AdminNotifications.
+
+Notes:
+- Orders must not be deleted when a customer deletes the account.
+- Personal identifiers must be anonymized on account deletion.
+- Orders start with Status = UnderReview.
+- PaymentMethod is CashOnDelivery only.
+- PaymentStatus starts PendingOnDelivery.
+
+
+Table: OrderItems
+Purpose:
+Stores immutable product line snapshots for each order.
+
+Fields:
+- Id: uuid, required, primary key.
+- OrderId: uuid, required, foreign key to Orders.Id.
+- ProductId: uuid, nullable, foreign key to Products.Id.
+- ProductNameSnapshot: nvarchar(250), required.
+- BrandNameSnapshot: nvarchar(200), optional.
+- CategoryNameSnapshot: nvarchar(200), optional.
+- ProductSizeLabelSnapshot: nvarchar(80), optional.
+- ProductColorNameSnapshot: nvarchar(120), optional.
+- ProductColorHexSnapshot: nvarchar(20), optional.
+- Quantity: int, required.
+- UnitPrice: decimal(18,2), required.
+- DiscountPercent: decimal(5,2), optional.
+- FinalUnitPrice: decimal(18,2), required.
+- LineTotal: decimal(18,2), required.
+- CreatedAt: datetime required.
+
+Indexes:
+- Index on OrderId.
+- Index on ProductId.
+
+Relationships:
+- Belongs to Orders.
+- Optionally references Products.
+
+Notes:
+- ProductId is nullable so deleted products do not break historical order details.
+- Use snapshots for names, size/color, prices, and discounts.
+
+
+Table: OrderStatusHistory
+Purpose:
+Stores order status timeline/history.
+
+Fields:
+- Id: uuid, required, primary key.
+- OrderId: uuid, required, foreign key to Orders.Id.
+- Status: enum OrderStatus, required.
+- ChangedByUserId: uuid, nullable, foreign key to Users.Id.
+- ChangedAt: datetime required.
+- Note: nvarchar(1000), optional.
+
+Indexes:
+- Index on OrderId.
+- Index on ChangedAt.
+- Index on ChangedByUserId.
+
+Relationships:
+- Belongs to Orders.
+- Optionally belongs to Users.
+
+Notes:
+- Every order creation creates an initial UnderReview history row.
+- Admin status updates must append a new history row.
+
+
+Table: ProductReviews
+Purpose:
+Stores customer product reviews and ratings.
+
+Fields:
+- Id: uuid, required, primary key.
+- ProductId: uuid, required, foreign key to Products.Id.
+- UserId: uuid, required, foreign key to Users.Id.
+- OrderId: uuid, optional, foreign key to Orders.Id.
+- Rating: int, required.
+- Comment: nvarchar(max), optional.
+- IsApproved: bit/boolean, required, default true or false depending on moderation policy.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Index on ProductId.
+- Index on UserId.
+- Index on OrderId.
+- Index on IsApproved.
+- Optional unique index on ProductId + UserId + OrderId.
+
+Relationships:
+- Belongs to Products.
+- Belongs to Users.
+- Optionally belongs to Orders.
+
+Validation:
+- Rating must be between 1 and 5.
+- Product rating is calculated as average approved rating.
+- Review count is count of approved reviews.
+
+
+Table: StoreSettings
+Purpose:
+Stores general store configuration.
+
+Fields:
+- Id: uuid, required, primary key.
+- StoreName: nvarchar(200), required.
+- LogoUrl: nvarchar(1000), optional.
+- ContactEmail: nvarchar(320), optional.
+- Phone: nvarchar(40), optional.
+- Address: nvarchar(1000), optional.
+- Currency: nvarchar(10), required.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- No major indexes required; usually one row.
+
+Notes:
+- Use one active settings row or a key-value model if preferred.
+
+
+Table: AnnouncementSettings
+Purpose:
+Stores top announcement bar configuration.
+
+Fields:
+- Id: uuid, required, primary key.
+- IsEnabled: bit/boolean, required, default true.
+- Text: nvarchar(500), required.
+- BackgroundColor: nvarchar(20), required.
+- TextColor: nvarchar(20), required.
+- LinkText: nvarchar(120), optional.
+- LinkUrl: nvarchar(1000), optional.
+- StartDate: datetime, optional.
+- EndDate: datetime, optional.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Index on IsEnabled.
+- Index on StartDate + EndDate if querying by active date.
+
+Notes:
+- Frontend is Arabic-only, so one Text field is enough.
+- Validate colors as hex values.
+
+
+Table: Discounts
+Purpose:
+Stores global, brand-level, and product-level discounts.
+
+Fields:
+- Id: uuid, required, primary key.
+- Type: enum DiscountType, required.
+- ScopeId: uuid, nullable. Null for Global, BrandId for Brand, ProductId for Product.
+- Percentage: decimal(5,2), required.
+- Label: nvarchar(150), optional.
+- IsEnabled: bit/boolean, required, default true.
+- StartDate: datetime, optional.
+- EndDate: datetime, optional.
+- CreatedAt: datetime required.
+- UpdatedAt: datetime required.
+
+Indexes:
+- Index on Type.
+- Index on ScopeId.
+- Index on IsEnabled.
+- Index on StartDate + EndDate.
+- Optional unique filtered index on Type + ScopeId where IsEnabled = true if only one active discount per scope is allowed.
+
+Relationships:
+- ScopeId references Brands.Id when Type = Brand.
+- ScopeId references Products.Id when Type = Product.
+
+Rules:
+- Priority is Product > Brand > Global.
+- Percentage must be between 0 and 100.
+- Discounts apply to the selected size/variant price.
+
+
+Table: AdminNotifications
+Purpose:
+Stores in-system admin notifications.
+
+Fields:
+- Id: uuid, required, primary key.
+- Type: enum NotificationType, required.
+- Title: nvarchar(200), required.
+- Message: nvarchar(1000), optional.
+- OrderId: uuid, nullable, foreign key to Orders.Id.
+- IsRead: bit/boolean, required, default false.
+- CreatedAt: datetime required.
+
+Indexes:
+- Index on IsRead.
+- Index on CreatedAt.
+- Index on OrderId.
+
+Relationships:
+- Optionally belongs to Orders.
+
+Notes:
+- No email, SMS, or browser push is required.
+- New order creates a NewOrder notification.
+
+
+Table: SystemMedia
+Purpose:
+Stores uploaded media metadata.
+
+Fields:
+- Id: uuid, required, primary key.
+- OwnerType: nvarchar(80), required. Example: Product, Category, Store.
+- OwnerId: uuid, optional.
+- FileUrl: nvarchar(1000), required.
+- FileType: enum MediaType, required.
+- FileName: nvarchar(255), required.
+- MimeType: nvarchar(120), required.
+- Size: bigint, required.
+- CreatedAt: datetime required.
+
+Indexes:
+- Index on OwnerType + OwnerId.
+- Index on FileType.
+
+Relationships:
+- Can be referenced by Products, ProductImages, ProductVideos, Categories, StoreSettings.
+
+
+3. ENUMS
+--------
+
+UserRole:
+- Admin
+- Customer
+
+OrderStatus:
+- UnderReview
+- Approved
+- Rejected
+- Preparing
+- Shipping
+- OutForDelivery
+- Received
+- Cancelled
+
+Recommended stored values:
+- under_review
+- approved
+- rejected
+- preparing
+- shipping
+- out_for_delivery
+- received
+- cancelled
+
+PaymentMethod:
+- CashOnDelivery
+
+Recommended stored value:
+- cash_on_delivery
+
+PaymentStatus:
+- PendingOnDelivery
+- PaidOnDelivery
+
+Recommended stored values:
+- pending_on_delivery
+- paid_on_delivery
+
+DiscountType:
+- Global
+- Brand
+- Product
+
+NotificationType:
+- NewOrder
+- OrderStatusChanged
+
+MediaType:
+- Image
+- Video
+
+
+4. BUSINESS RULES
+-----------------
+
+Arabic-only frontend:
+- All server-provided display labels/content should support Arabic.
+- The frontend remains RTL.
+- Keep numbers as English digits. Formatting can be handled by frontend using en-US number formatting.
+
+Admin cannot shop:
+- Admin must not add to cart, wishlist, checkout, or place orders.
+- Backend must reject cart/wishlist/order mutation endpoints for Admin role.
+- Admin can preview storefront products, but shopping actions are not allowed.
+
+Guest cannot add to cart:
+- Guests can browse products and categories.
+- Guests must login/register as Customer before cart, wishlist, checkout, or order creation mutations.
+
+Customer data isolation:
+- Customers can only read/update their own profile, addresses, cart, wishlist, and orders.
+- Admin can read all orders and manage store data.
+- Never let one customer access another customer's orders.
+
+Account deletion:
+- Customer can delete account.
+- User is marked IsDeleted = true or anonymized.
+- Email and phone are removed/anonymized.
+- CustomerProfiles, CustomerAddresses, Cart, CartItems, Wishlist, WishlistItems are deleted.
+- Login sessions/tokens are revoked.
+- Orders are not deleted.
+- Related Orders must set CustomerDeleted = true.
+- Related Orders must anonymize CustomerEmailSnapshot and CustomerPhoneSnapshot.
+- Admin can still see order number, items, totals, statuses, payment, and history.
+
+Product size pricing:
+- Product has BasePrice.
+- ProductSizes.Price can override BasePrice.
+- ProductVariants.Price can override both ProductSizes.Price and BasePrice if variants are used.
+- Cart and orders must store the selected final price snapshot.
+- Quantity cannot exceed selected size/variant stock.
+
+Discount priority:
+- Product discount has highest priority.
+- Brand discount comes next.
+- Global discount comes last.
+- Discount applies to selected size/variant price.
+- Admin must not manually update every product for global discounts.
+
+Product rating:
+- Admin cannot create/edit Rating or ReviewCount fields.
+- Rating is calculated from approved ProductReviews.
+- AverageRating = sum(Rating) / count(approved reviews).
+- ReviewCount = count(approved reviews).
+- If no reviews, frontend shows no reviews yet.
+
+Cash on delivery:
+- Payment method is CashOnDelivery only.
+- No card, PayPal, Stripe, or electronic payment fields.
+- New order PaymentStatus = PendingOnDelivery.
+- When order is Received, PaymentStatus can become PaidOnDelivery.
+
+Order lifecycle:
+- New orders start UnderReview.
+- Admin can approve or reject UnderReview orders.
+- Approved orders can move to Preparing, Shipping, OutForDelivery, Received.
+- Every status change appends OrderStatusHistory.
+- Customer sees current status and timeline.
+
+Notifications:
+- New order creates AdminNotifications row Type = NewOrder.
+- Notifications are in-system only.
+- Admin can mark one notification as read or all as read.
+
+
+5. REQUIRED BACKEND APIS
+------------------------
+
+General response shape:
+Success:
+{
+  "success": true,
+  "data": {},
+  "message": "optional Arabic message"
+}
+
+Error:
+{
+  "success": false,
+  "error": {
+    "code": "validation_error",
+    "message": "Arabic error message",
+    "fields": {}
+  }
+}
+
+
+AUTH APIS
+---------
+
+POST /api/auth/login
+Purpose:
+Login admin or customer.
+Access:
+Public.
+Body:
+- email: string, required.
+- password: string, required.
+Response:
+- user: { id, fullName, email, phoneNumber, role }
+- token or secure session cookie.
+Validation:
+- User must exist.
+- Password must match.
+- IsDeleted must be false.
+
+POST /api/auth/register-customer
+Purpose:
+Register a new customer account.
+Access:
+Public.
+Body:
+- fullName: string, required.
+- email: string, required, unique among active users.
+- phoneNumber: string, required.
+- password: string, required.
+Response:
+- user profile and auth token/session.
+Validation:
+- Role is always Customer.
+- Email format valid.
+- Password meets policy.
+- Deleted account email can be reused only if old email was anonymized.
+
+POST /api/auth/logout
+Purpose:
+End current session.
+Access:
+Authenticated Admin or Customer.
+Body:
+- none.
+Response:
+- success message.
+Validation:
+- Revoke token/session if server-side sessions are used.
+
+GET /api/auth/me
+Purpose:
+Return current authenticated user.
+Access:
+Authenticated Admin or Customer.
+Response:
+- user: { id, fullName, email, phoneNumber, role }
+Validation:
+- IsDeleted must be false.
+
+DELETE /api/account
+Purpose:
+Delete/deactivate current customer account.
+Access:
+Customer only.
+Body:
+- password: string optional if requiring confirmation.
+Response:
+- success message.
+Validation:
+- Admin cannot call this endpoint as a shopping account.
+- Orders remain.
+- Personal data is anonymized.
+- Cart/wishlist/profile/addresses are removed.
+
+
+CUSTOMER ACCOUNT APIS
+---------------------
+
+GET /api/account/profile
+Purpose:
+Read current customer profile.
+Access:
+Customer only.
+Response:
+- fullName, email, phoneNumber, preferredName.
+
+PUT /api/account/profile
+Purpose:
+Update profile.
+Access:
+Customer only.
+Body:
+- fullName: string, required.
+- phoneNumber: string, required.
+- preferredName: string optional.
+Response:
+- updated profile.
+Validation:
+- Customer can update only own profile.
+- Email change should be a separate verified flow if needed.
+
+GET /api/account/addresses
+Purpose:
+List customer addresses.
+Access:
+Customer only.
+Response:
+- array of addresses.
+
+POST /api/account/addresses
+Purpose:
+Create address.
+Access:
+Customer only.
+Body:
+- city, area, street: required.
+- building, notes: optional.
+- isDefault: optional.
+Validation:
+- If first address, make default.
+- If isDefault true, clear other defaults.
+
+PUT /api/account/addresses/{id}
+Purpose:
+Update address.
+Access:
+Customer only.
+Validation:
+- Address must belong to current customer.
+
+DELETE /api/account/addresses/{id}
+Purpose:
+Delete address.
+Access:
+Customer only.
+Validation:
+- Address must belong to current customer.
+- If default deleted, another address may become default.
+
+PUT /api/account/addresses/{id}/default
+Purpose:
+Set address as default.
+Access:
+Customer only.
+Validation:
+- Address must belong to current customer.
+
+
+PRODUCT APIS
+------------
+
+GET /api/products
+Purpose:
+List active storefront products.
+Access:
+Public.
+Query:
+- page, pageSize.
+- categorySlug/categoryId optional.
+- brandId optional.
+- minPrice/maxPrice optional.
+- sort optional.
+Response:
+- products with images, brand, category, colors, sizes, calculated rating, and effective discount.
+Validation:
+- Only active products for public.
+
+GET /api/products/{id}
+Purpose:
+Get product by id.
+Access:
+Public.
+Response:
+- product details with media, colors, sizes, variants, reviews summary, effective discount.
+
+GET /api/products/by-slug/{slug}
+Purpose:
+Get product by slug.
+Access:
+Public.
+
+GET /api/products/search
+Purpose:
+Search products.
+Access:
+Public.
+Query:
+- q: string.
+- categoryId/categorySlug optional.
+- filters optional.
+Response:
+- matching products.
+
+POST /api/admin/products
+Purpose:
+Create product.
+Access:
+Admin only.
+Body:
+- name, slug optional, brandId, categoryId, basePrice, baseOldPrice optional.
+- description, ingredients, howToUse, skinType.
+- isActive, isNew.
+- colors optional.
+- sizes optional with label, price, oldPrice, stock, sku.
+- variants optional.
+Validation:
+- Admin only.
+- BasePrice required and non-negative.
+- No rating or review count fields accepted.
+- Size price/stock validation.
+- Color hex validation.
+
+PUT /api/admin/products/{id}
+Purpose:
+Update product.
+Access:
+Admin only.
+Validation:
+- Same as create.
+- Do not accept rating/reviewCount.
+
+DELETE /api/admin/products/{id}
+Purpose:
+Delete/deactivate product.
+Access:
+Admin only.
+Recommended behavior:
+- Soft delete by IsActive = false if product has historical orders.
+
+POST /api/admin/products/{id}/images
+Purpose:
+Upload/add product image.
+Access:
+Admin only.
+Body:
+- file or imageUrl.
+- altText optional.
+- sortOrder optional.
+Response:
+- ProductImages row.
+
+DELETE /api/admin/products/{id}/images/{imageId}
+Purpose:
+Remove product image.
+Access:
+Admin only.
+
+POST /api/admin/products/{id}/video
+Purpose:
+Upload/add product video.
+Access:
+Admin only.
+Body:
+- file or videoUrl.
+- sortOrder optional.
+
+DELETE /api/admin/products/{id}/video/{videoId}
+Purpose:
+Remove product video.
+Access:
+Admin only.
+
+
+CATEGORIES APIS
+---------------
+
+GET /api/categories
+Purpose:
+List active categories.
+Access:
+Public.
+Response:
+- categories with id, name, slug, description, imageUrl.
+
+POST /api/admin/categories
+Purpose:
+Create category.
+Access:
+Admin only.
+Body:
+- name, slug optional, description optional, imageUrl optional, isActive.
+
+PUT /api/admin/categories/{id}
+Purpose:
+Update category.
+Access:
+Admin only.
+
+DELETE /api/admin/categories/{id}
+Purpose:
+Delete/deactivate category.
+Access:
+Admin only.
+Validation:
+- Prefer soft deactivate if products exist.
+
+
+BRANDS APIS
+-----------
+
+GET /api/brands
+Purpose:
+List active brands.
+Access:
+Public.
+Response:
+- brands with id, name, slug, description.
+
+POST /api/admin/brands
+Purpose:
+Create brand.
+Access:
+Admin only.
+Body:
+- name, slug optional, description optional, isActive.
+
+PUT /api/admin/brands/{id}
+Purpose:
+Update brand.
+Access:
+Admin only.
+
+DELETE /api/admin/brands/{id}
+Purpose:
+Delete/deactivate brand.
+Access:
+Admin only.
+Validation:
+- Prefer soft deactivate if products exist.
+
+
+CART APIS
+---------
+
+GET /api/cart
+Purpose:
+Return current customer cart.
+Access:
+Customer only.
+Response:
+- cart items with product, selected size/color/variant, quantity, unit price, final unit price, totals.
+
+POST /api/cart/items
+Purpose:
+Add item to cart.
+Access:
+Customer only.
+Body:
+- productId: required.
+- productSizeId: required if product has sizes.
+- productColorId: required if product has colors.
+- productVariantId: optional.
+- quantity: required.
+Validation:
+- Admin forbidden.
+- Product active.
+- Required variants selected.
+- Quantity <= selected stock.
+- Price calculated from selected size/variant and discounts.
+
+PUT /api/cart/items/{id}
+Purpose:
+Update item quantity.
+Access:
+Customer only.
+Body:
+- quantity: int required.
+Validation:
+- Cart item belongs to current customer.
+- Quantity <= selected stock.
+
+DELETE /api/cart/items/{id}
+Purpose:
+Remove cart item.
+Access:
+Customer only.
+
+DELETE /api/cart
+Purpose:
+Clear cart.
+Access:
+Customer only.
+
+
+WISHLIST APIS
+-------------
+
+GET /api/wishlist
+Purpose:
+Return current customer wishlist.
+Access:
+Customer only.
+
+POST /api/wishlist/items
+Purpose:
+Add product to wishlist.
+Access:
+Customer only.
+Body:
+- productId: required.
+Validation:
+- Admin forbidden.
+- Product active.
+- Avoid duplicates.
+
+DELETE /api/wishlist/items/{id}
+Purpose:
+Remove wishlist item.
+Access:
+Customer only.
+Validation:
+- Item belongs to current customer wishlist.
+
+
+ORDERS APIS
+-----------
+
+POST /api/orders
+Purpose:
+Create order from current cart.
+Access:
+Customer only.
+Body:
+- customerName, phone.
+- city, area, street, building optional, notes optional.
+- optional addressId if using saved address.
+Response:
+- created order with status UnderReview and payment PendingOnDelivery.
+Validation:
+- Cart cannot be empty.
+- Admin forbidden.
+- Product and selected variant stock available.
+- Required address fields present.
+- PaymentMethod is CashOnDelivery only.
+- Deduct/reserve stock depending on chosen inventory policy.
+- Clear cart after successful order.
+- Create AdminNotifications NewOrder.
+
+GET /api/orders/my
+Purpose:
+List current customer's orders.
+Access:
+Customer only.
+Response:
+- orders filtered by current UserId.
+Validation:
+- Never return orders for another customer.
+
+GET /api/orders/{id}
+Purpose:
+Get current customer's order details.
+Access:
+Customer only.
+Validation:
+- Order.UserId must equal current user id.
+
+GET /api/admin/orders
+Purpose:
+List all orders.
+Access:
+Admin only.
+Query:
+- status optional.
+- date range optional.
+- search order number/customer optional.
+Response:
+- all orders with customer snapshot, totals, statuses, payment method/status.
+
+GET /api/admin/orders/{id}
+Purpose:
+Get any order details for admin.
+Access:
+Admin only.
+
+PUT /api/admin/orders/{id}/approve
+Purpose:
+Approve UnderReview order.
+Access:
+Admin only.
+Response:
+- updated order.
+Validation:
+- Current status must be UnderReview.
+- Append OrderStatusHistory Approved.
+
+PUT /api/admin/orders/{id}/reject
+Purpose:
+Reject UnderReview order.
+Access:
+Admin only.
+Body:
+- note optional.
+Validation:
+- Current status must be UnderReview.
+- Append OrderStatusHistory Rejected.
+
+PUT /api/admin/orders/{id}/status
+Purpose:
+Update approved order status.
+Access:
+Admin only.
+Body:
+- status: Preparing, Shipping, OutForDelivery, Received, Cancelled.
+- note optional.
+Validation:
+- Admin only.
+- Status transition must be allowed.
+- Append OrderStatusHistory.
+- If Received, PaymentStatus can become PaidOnDelivery.
+
+
+REVIEWS APIS
+------------
+
+GET /api/products/{id}/reviews
+Purpose:
+List product reviews.
+Access:
+Public.
+Query:
+- page, pageSize.
+Response:
+- approved reviews.
+
+POST /api/products/{id}/reviews
+Purpose:
+Create product review.
+Access:
+Customer only.
+Body:
+- rating: int 1..5, required.
+- comment: optional.
+- orderId optional.
+Validation:
+- Rating 1 to 5.
+- Customer may need delivered/received order containing product if enforcing verified reviews.
+- Admin cannot submit as shopper.
+
+
+STORE SETTINGS APIS
+-------------------
+
+GET /api/admin/settings
+Purpose:
+Get store settings for admin.
+Access:
+Admin only.
+Response:
+- StoreSettings, AnnouncementSettings, Discounts, social/order settings.
+
+PUT /api/admin/settings
+Purpose:
+Update store settings.
+Access:
+Admin only.
+Body:
+- storeName, logoUrl, contactEmail, phone, address, currency.
+- orderConfirmationText optional.
+- social links optional.
+Validation:
+- Currency supported.
+- URLs valid if provided.
+
+GET /api/announcement
+Purpose:
+Return active announcement for storefront.
+Access:
+Public.
+Response:
+- isEnabled, text, backgroundColor, textColor, linkText, linkUrl.
+Validation:
+- Return disabled/empty if outside start/end date.
+
+PUT /api/admin/announcement
+Purpose:
+Update announcement bar.
+Access:
+Admin only.
+Body:
+- isEnabled, text, backgroundColor, textColor, linkText, linkUrl, startDate, endDate.
+Validation:
+- Hex colors valid.
+- EndDate >= StartDate if both provided.
+
+
+DISCOUNT APIS
+-------------
+
+GET /api/admin/discounts
+Purpose:
+List discounts.
+Access:
+Admin only.
+Response:
+- global, brand, product discounts.
+
+POST /api/admin/discounts
+Purpose:
+Create discount.
+Access:
+Admin only.
+Body:
+- type: Global, Brand, Product.
+- scopeId nullable depending on type.
+- percentage.
+- label optional.
+- isEnabled.
+- startDate/endDate optional.
+Validation:
+- Percentage 0..100.
+- Global must have null scopeId.
+- Brand must reference existing Brand.
+- Product must reference existing Product.
+
+PUT /api/admin/discounts/{id}
+Purpose:
+Update discount.
+Access:
+Admin only.
+Validation:
+- Same as create.
+
+DELETE /api/admin/discounts/{id}
+Purpose:
+Delete discount.
+Access:
+Admin only.
+
+
+NOTIFICATIONS APIS
+------------------
+
+GET /api/admin/notifications
+Purpose:
+List admin notifications.
+Access:
+Admin only.
+Query:
+- unreadOnly optional.
+- page, pageSize.
+Response:
+- notifications with orderId, orderNumber, customerName, total, date, status.
+
+PUT /api/admin/notifications/{id}/read
+Purpose:
+Mark one notification as read.
+Access:
+Admin only.
+Validation:
+- Notification exists.
+
+PUT /api/admin/notifications/read-all
+Purpose:
+Mark all notifications as read.
+Access:
+Admin only.
+
+
+6. API NOTES BY GROUP
+---------------------
+
+Auth:
+- Public login/register endpoints return authenticated session data.
+- Authenticated endpoints must reject deleted users.
+- Registration is customer-only. Admin creation should be handled separately by seed/admin tooling.
+
+Customer:
+- Customer endpoints must use current authenticated user id, not user id from request body.
+- Account deletion must be transactional:
+  1. Mark user deleted/anonymize user.
+  2. Delete profile/addresses/cart/wishlist.
+  3. Anonymize order personal identifiers.
+  4. Revoke sessions.
+
+Products:
+- Public products include calculated rating and active discount summary.
+- Admin product create/update must support colors, sizes, and optional variants.
+- Do not accept manual Rating or ReviewCount.
+- Size prices and variant prices must be decimal values.
+
+Categories and brands:
+- Public lists show active rows only.
+- Admin can create/update/deactivate.
+- Slugs should be unique and stable.
+
+Cart:
+- Cart price should be recalculated on add/update using selected size/variant and current discount rules.
+- Store UnitPrice and FinalUnitPrice snapshots in CartItems.
+- Cart totals are derived from FinalUnitPrice * Quantity.
+
+Wishlist:
+- Wishlist is per customer.
+- Admin and guest mutations forbidden.
+
+Orders:
+- Order creation copies cart item snapshots into OrderItems.
+- Order totals must use cart/order final unit prices.
+- Order customer and address snapshots must stay with the order.
+- Admin status changes must be immediately visible to customer order views.
+
+Reviews:
+- Product rating is a query/projection from ProductReviews.
+- If moderation is enabled, only approved reviews count.
+
+Settings:
+- Store settings are admin-only except public announcement.
+- Frontend can cache announcement but should refresh after admin updates.
+
+Discounts:
+- Effective discount resolver:
+  1. Check active Product discount by ProductId.
+  2. Else check active Brand discount by BrandId.
+  3. Else check active Global discount.
+  4. Else no discount.
+- Active means IsEnabled = true and date range contains current time.
+
+Notifications:
+- New order creation writes AdminNotifications row.
+- Read state persists per notification.
+- Clicking notification should open the related order details.
+

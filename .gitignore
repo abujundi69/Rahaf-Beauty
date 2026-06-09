@@ -1,0 +1,26 @@
+# Visual Studio
+.vs/
+**/.vs/
+*.user
+*.suo
+*.vsidx
+
+# .NET
+bin/
+obj/
+
+# Frontend
+node_modules/
+dist/
+build/
+
+# Logs
+*.log
+*.err
+FrontEnd/vite-dev.log
+FrontEnd/vite-dev.err
+
+# Environment files
+.env
+.env.local
+.env.*.local

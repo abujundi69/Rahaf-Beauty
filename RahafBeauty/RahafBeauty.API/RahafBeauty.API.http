@@ -1,0 +1,6 @@
+@RahafBeauty.API_HostAddress = http://localhost:5138
+
+GET {{RahafBeauty.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
